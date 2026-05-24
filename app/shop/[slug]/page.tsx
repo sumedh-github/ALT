@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { AddToCartForm } from "@/components/alt/add-to-cart-form";
 import { PageReveal } from "@/components/alt/page-reveal";
@@ -10,8 +10,21 @@ interface ShopProductPageProps {
   params: { slug: string };
 }
 
+const legacySlugRedirects: Record<string, string> = {
+  "obsidian-drape-hoodie": "obsidian-oversized-hoodie",
+  "gold-stitch-box-tee": "gold-stitch-oversized-tee",
+  "charcoal-veil-trench": "shadow-striped-oversized-shirt",
+  "charcaol-veil-trench": "shadow-striped-oversized-shirt"
+};
+
 export default function ShopProductPage({ params }: ShopProductPageProps) {
-  const product = altProducts.find((entry) => entry.slug === params.slug);
+  const normalizedSlug = params.slug.toLowerCase();
+  const redirectSlug = legacySlugRedirects[normalizedSlug];
+  if (redirectSlug) {
+    redirect(`/shop/${redirectSlug}`);
+  }
+
+  const product = altProducts.find((entry) => entry.slug === normalizedSlug);
   if (!product) {
     notFound();
   }
