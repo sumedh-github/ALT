@@ -13,7 +13,7 @@ export function getStripe() {
   }
 
   stripeInstance = new Stripe(secretKey, {
-    apiVersion: "2025-04-30.basil",
+    apiVersion: "2025-08-27.basil",
     typescript: true
   });
   return stripeInstance;

@@ -1,6 +1,8 @@
-import type { Product } from "@/types";
 import { prisma } from "@/lib/prisma";
 import { altFeaturedProducts } from "@/lib/mock-data";
+import type { Product } from "@/types";
+
+const hasDatabase = Boolean(process.env.DATABASE_URL);
 
 function mapProduct(product: {
   id: string;
@@ -29,6 +31,10 @@ function mapProduct(product: {
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
+  if (!hasDatabase) {
+    return altFeaturedProducts;
+  }
+
   try {
     const rows = await prisma.product.findMany({
       where: { featured: true, active: true },
@@ -36,32 +42,34 @@ export async function getFeaturedProducts(): Promise<Product[]> {
       orderBy: { createdAt: "desc" },
       take: 6
     });
-    if (!rows.length) {
-      return altFeaturedProducts;
-    }
-    return rows.map(mapProduct);
+    return rows.length ? rows.map(mapProduct) : altFeaturedProducts;
   } catch {
     return altFeaturedProducts;
   }
 }
 
 export async function getAllProducts(): Promise<Product[]> {
+  if (!hasDatabase) {
+    return altFeaturedProducts;
+  }
+
   try {
     const rows = await prisma.product.findMany({
       where: { active: true },
       include: { category: true, images: { orderBy: { position: "asc" } } },
       orderBy: { createdAt: "desc" }
     });
-    if (!rows.length) {
-      return altFeaturedProducts;
-    }
-    return rows.map(mapProduct);
+    return rows.length ? rows.map(mapProduct) : altFeaturedProducts;
   } catch {
     return altFeaturedProducts;
   }
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
+  if (!hasDatabase) {
+    return altFeaturedProducts.find((product) => product.slug === slug) ?? null;
+  }
+
   try {
     const row = await prisma.product.findUnique({
       where: { slug },
