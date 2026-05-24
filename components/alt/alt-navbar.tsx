@@ -21,27 +21,31 @@ export function AltNavbar() {
   const setMobileMenuOpen = useUiStore((state) => state.setMobileMenuOpen);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-surface/80 bg-bg/95 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-white/10 bg-black/40 backdrop-blur-md">
       <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
           <button
             type="button"
-            className="rounded-sm border border-surface p-2 text-taupe transition hover:border-gold hover:text-gold sm:hidden"
+            className="p-1 text-white transition hover:text-gold sm:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle mobile menu"
           >
-            <Menu size={16} />
+            <Menu size={24} />
           </button>
-          <Link href="/" className="font-display text-2xl leading-none tracking-wide">
+          <Link
+            href="/"
+            className="font-display text-[28px] font-semibold uppercase leading-none tracking-[0.2em] text-gold"
+          >
             ALT
           </Link>
         </div>
 
-        <nav className="hidden items-center gap-6 sm:flex">
+        <nav className="hidden items-center gap-7 sm:flex">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-xs uppercase tracking-[0.2em] text-taupe transition hover:text-gold"
+              className="font-body text-[13px] font-medium uppercase tracking-widest text-text transition-colors duration-200 hover:text-gold"
             >
               {link.label}
             </Link>
@@ -50,11 +54,11 @@ export function AltNavbar() {
 
         <button
           type="button"
-          className="relative rounded-sm border border-surface p-2 text-taupe transition hover:border-gold hover:text-gold"
+          className="relative p-1 text-gold transition hover:text-taupe"
           onClick={() => setCartOpen(true)}
           aria-label="Open cart"
         >
-          <ShoppingBag size={16} />
+          <ShoppingBag size={22} />
           {quantity > 0 ? (
             <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-gold px-1 text-center text-[10px] text-bg">
               {quantity}
@@ -64,13 +68,13 @@ export function AltNavbar() {
       </div>
 
       {mobileMenuOpen ? (
-        <div className="border-t border-surface bg-bg px-4 pb-4 pt-3 sm:hidden">
+        <div className="border-t border-white/10 bg-black/70 px-4 pb-4 pt-3 backdrop-blur-md sm:hidden">
           <div className="flex flex-col gap-3">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-xs uppercase tracking-[0.2em] text-taupe transition hover:text-gold"
+                className="font-body text-[13px] font-medium uppercase tracking-widest text-text transition-colors duration-200 hover:text-gold"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {link.label}

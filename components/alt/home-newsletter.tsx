@@ -2,24 +2,24 @@
 
 export function HomeNewsletter() {
   return (
-    <section className="rounded-sm border border-surface bg-[#12161f] px-4 py-10 sm:px-6 lg:px-10">
-      <div className="mx-auto max-w-2xl text-center">
-        <p className="font-body text-xs uppercase tracking-[0.32em] text-gold">
-          Join the Theory
+    <section className="py-10">
+      <div className="max-w-3xl pl-6 sm:pl-14 lg:pl-24">
+        <p className="font-display text-3xl italic tracking-[0.08em] text-gold sm:text-4xl">
+          JOIN THE THEORY
         </p>
-        <p className="mt-4 font-body text-sm leading-relaxed text-taupe">
+        <p className="mt-4 max-w-xl font-body text-sm leading-relaxed text-muted">
           Receive early access to limited drops, lookbook releases, and private
-          ALT dispatches.
+          dispatches from Avero Loose Theory.
         </p>
-        <form className="mt-6 flex flex-col gap-3 sm:flex-row">
+        <form className="mt-7 flex max-w-xl items-end gap-6">
           <input
             type="email"
             placeholder="Email address"
-            className="w-full rounded-sm border border-surface bg-bg px-4 py-3 font-body text-sm text-text placeholder:text-muted focus:border-gold focus:outline-none"
+            className="w-full border-b border-taupe/35 bg-transparent pb-2 font-body text-sm text-text placeholder:text-muted focus:border-gold focus:outline-none"
           />
           <button
             type="submit"
-            className="rounded-sm border border-gold bg-gold px-5 py-3 font-body text-xs uppercase tracking-[0.24em] text-bg transition hover:bg-gold/90"
+            className="font-body text-xs uppercase tracking-[0.24em] text-gold transition hover:text-taupe"
           >
             Submit
           </button>

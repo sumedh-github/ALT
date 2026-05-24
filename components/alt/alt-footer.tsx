@@ -1,32 +1,40 @@
 import Link from "next/link";
+import { Instagram } from "lucide-react";
 
-const footerLinks = [
-  { href: "/shop", label: "Shop" },
-  { href: "/lookbook", label: "Lookbook" },
-  { href: "/about", label: "About" },
-  { href: "/cart", label: "Cart" }
-];
+function TikTokIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M15.8 4.1c.7 1 1.8 1.6 3 1.8v3a6.4 6.4 0 0 1-3-.8v5.9a5.8 5.8 0 1 1-5.8-5.8c.3 0 .7 0 1 .1v3.2a2.7 2.7 0 0 0-1-.2 2.7 2.7 0 1 0 2.7 2.7V2h3.1c0 .7.2 1.4.6 2.1Z"
+      />
+    </svg>
+  );
+}
 
 export function AltFooter() {
   return (
-    <footer className="border-t border-surface py-10">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 sm:flex-row sm:items-end sm:justify-between sm:px-6 lg:px-8">
-        <div>
-          <p className="font-display text-3xl">Avero Loose Theory</p>
-          <p className="mt-2 text-xs uppercase tracking-[0.25em] text-taupe">
-            The Oversized Theory
-          </p>
-        </div>
-        <div className="flex flex-col gap-2 sm:items-end">
-          {footerLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-xs uppercase tracking-[0.2em] text-muted transition hover:text-gold"
-            >
-              {link.label}
-            </Link>
-          ))}
+    <footer className="border-t border-surface/70 py-6">
+      <div className="mx-auto flex w-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+        <p className="font-body text-[11px] uppercase tracking-[0.2em] text-muted">
+          Avero Loose Theory
+        </p>
+        <div className="flex-1" />
+        <div className="flex items-center gap-4 text-taupe">
+          <Link
+            href="#"
+            aria-label="Instagram"
+            className="transition-colors duration-200 hover:text-gold"
+          >
+            <Instagram size={18} />
+          </Link>
+          <Link
+            href="#"
+            aria-label="TikTok"
+            className="transition-colors duration-200 hover:text-gold"
+          >
+            <TikTokIcon />
+          </Link>
         </div>
       </div>
     </footer>
