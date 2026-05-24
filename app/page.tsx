@@ -1,5 +1,4 @@
 import { AltHero } from "@/components/alt/alt-hero";
-import { AltLogoEmblem } from "@/components/alt/alt-logo-emblem";
 import { PageReveal } from "@/components/alt/page-reveal";
 import { ProductGrid } from "@/components/alt/product-grid";
 import { SectionIntro } from "@/components/alt/section-intro";
@@ -11,11 +10,6 @@ export default function HomePage() {
   return (
     <div className="space-y-14 pb-8">
       <AltHero />
-      <PageReveal delay={0.08} className="lg:hidden">
-        <div className="flex justify-end">
-          <AltLogoEmblem className="w-[220px]" />
-        </div>
-      </PageReveal>
       <PageReveal delay={0.15}>
         <SectionIntro
           eyebrow="Featured Pieces"

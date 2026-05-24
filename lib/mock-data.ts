@@ -179,6 +179,63 @@ export const altProducts: AltProduct[] = [
   },
   {
     id: "prod-07",
+    slug: "graphite-dropped-hoodie",
+    name: "Graphite Dropped Hoodie",
+    description:
+      "Oversized hoodie in brushed graphite fleece with deep dropped shoulder and oversized hood stack.",
+    shortDescription: "Brushed graphite hoodie with dropped shoulders.",
+    price: 232,
+    inventory: 17,
+    featured: true,
+    categoryId: "cat-hoodies",
+    images: [
+      {
+        id: "prod-07-image-1",
+        url: "https://images.unsplash.com/photo-1523398002811-999ca8dec234?auto=format&fit=crop&w=1200&q=80",
+        alt: "Graphite oversized hoodie with dropped shoulder"
+      }
+    ]
+  },
+  {
+    id: "prod-08",
+    slug: "stonewashed-oversized-hoodie",
+    name: "Stonewashed Oversized Hoodie",
+    description:
+      "Stonewashed oversized hoodie with long cuff stack and weighted body proportions for a grounded silhouette.",
+    shortDescription: "Stonewashed heavyweight hoodie with grounded volume.",
+    price: 218,
+    inventory: 22,
+    featured: false,
+    categoryId: "cat-hoodies",
+    images: [
+      {
+        id: "prod-08-image-1",
+        url: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=1200&q=80",
+        alt: "Stonewashed oversized hoodie in low light"
+      }
+    ]
+  },
+  {
+    id: "prod-09",
+    slug: "ember-washed-oversized-hoodie",
+    name: "Ember Washed Oversized Hoodie",
+    description:
+      "Washed oversized hoodie in dark ember tone with oversized sleeve volume and brushed internal texture.",
+    shortDescription: "Dark ember washed hoodie with oversized volume.",
+    price: 226,
+    inventory: 18,
+    featured: false,
+    categoryId: "cat-hoodies",
+    images: [
+      {
+        id: "prod-09-image-1",
+        url: "https://images.unsplash.com/photo-1619603364904-c0498317e145?auto=format&fit=crop&w=1200&q=80",
+        alt: "Ember washed oversized hoodie"
+      }
+    ]
+  },
+  {
+    id: "prod-10",
     slug: "gold-stitch-oversized-tee",
     name: "Gold Stitch Oversized Tee",
     description:
@@ -190,14 +247,14 @@ export const altProducts: AltProduct[] = [
     categoryId: "cat-tshirts",
     images: [
       {
-        id: "prod-07-image-1",
+        id: "prod-10-image-1",
         url: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1200&q=80",
         alt: "Black oversized t-shirt with wide shoulder cut"
       }
     ]
   },
   {
-    id: "prod-08",
+    id: "prod-11",
     slug: "washed-onyx-box-tee",
     name: "Washed Onyx Box Tee",
     description:
@@ -209,14 +266,14 @@ export const altProducts: AltProduct[] = [
     categoryId: "cat-tshirts",
     images: [
       {
-        id: "prod-08-image-1",
+        id: "prod-11-image-1",
         url: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?auto=format&fit=crop&w=1200&q=80",
         alt: "Oversized washed black t-shirt on model"
       }
     ]
   },
   {
-    id: "prod-09",
+    id: "prod-12",
     slug: "deep-charcoal-drape-tee",
     name: "Deep Charcoal Drape Tee",
     description:
@@ -228,14 +285,14 @@ export const altProducts: AltProduct[] = [
     categoryId: "cat-tshirts",
     images: [
       {
-        id: "prod-09-image-1",
+        id: "prod-12-image-1",
         url: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=1200&q=80",
         alt: "Deep charcoal oversized drape t-shirt"
       }
     ]
   },
   {
-    id: "prod-10",
+    id: "prod-13",
     slug: "bone-wide-cut-tee",
     name: "Bone Wide Cut Tee",
     description:
@@ -247,14 +304,14 @@ export const altProducts: AltProduct[] = [
     categoryId: "cat-tshirts",
     images: [
       {
-        id: "prod-10-image-1",
+        id: "prod-13-image-1",
         url: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=1200&q=80",
         alt: "Faded bone oversized t-shirt in studio"
       }
     ]
   },
   {
-    id: "prod-11",
+    id: "prod-14",
     slug: "graphite-panel-oversized-tee",
     name: "Graphite Panel Oversized Tee",
     description:
@@ -266,14 +323,14 @@ export const altProducts: AltProduct[] = [
     categoryId: "cat-tshirts",
     images: [
       {
-        id: "prod-11-image-1",
+        id: "prod-14-image-1",
         url: "https://images.unsplash.com/photo-1559582798-678dfc71ccd8?auto=format&fit=crop&w=1200&q=80",
         alt: "Graphite oversized panel t-shirt"
       }
     ]
   },
   {
-    id: "prod-12",
+    id: "prod-15",
     slug: "muted-taupe-oversized-tee",
     name: "Muted Taupe Oversized Tee",
     description:
@@ -285,14 +342,14 @@ export const altProducts: AltProduct[] = [
     categoryId: "cat-tshirts",
     images: [
       {
-        id: "prod-12-image-1",
+        id: "prod-15-image-1",
         url: "https://images.unsplash.com/photo-1618677831708-0e7fda314f4b?auto=format&fit=crop&w=1200&q=80",
         alt: "Muted taupe oversized tee with relaxed fit"
       }
     ]
   },
   {
-    id: "prod-13",
+    id: "prod-16",
     slug: "phantom-layer-oversized-tee",
     name: "Phantom Layer Oversized Tee",
     description:
@@ -304,14 +361,14 @@ export const altProducts: AltProduct[] = [
     categoryId: "cat-tshirts",
     images: [
       {
-        id: "prod-13-image-1",
+        id: "prod-16-image-1",
         url: "https://images.unsplash.com/photo-1618354691321-e851c56960d1?auto=format&fit=crop&w=1200&q=80",
         alt: "Phantom layered oversized tee"
       }
     ]
   },
   {
-    id: "prod-14",
+    id: "prod-17",
     slug: "blackstone-split-hem-tee",
     name: "Blackstone Split Hem Tee",
     description:
@@ -323,14 +380,52 @@ export const altProducts: AltProduct[] = [
     categoryId: "cat-tshirts",
     images: [
       {
-        id: "prod-14-image-1",
+        id: "prod-17-image-1",
         url: "https://images.unsplash.com/photo-1603252109360-909baaf261c7?auto=format&fit=crop&w=1200&q=80",
         alt: "Blackstone oversized split hem tee"
       }
     ]
   },
   {
-    id: "prod-15",
+    id: "prod-18",
+    slug: "inkwide-signature-tee",
+    name: "Inkwide Signature Tee",
+    description:
+      "Oversized jersey tee with wide chest measure and extended sleeve drop, finished with muted signature detailing.",
+    shortDescription: "Signature oversized tee with broad chest cut.",
+    price: 112,
+    inventory: 30,
+    featured: true,
+    categoryId: "cat-tshirts",
+    images: [
+      {
+        id: "prod-18-image-1",
+        url: "https://images.unsplash.com/photo-1527719327859-c6ce80353573?auto=format&fit=crop&w=1200&q=80",
+        alt: "Inkwide oversized tee with broad fit"
+      }
+    ]
+  },
+  {
+    id: "prod-19",
+    slug: "ashes-extended-tee",
+    name: "Ashes Extended Tee",
+    description:
+      "Extended-length oversized tee in faded ash with deep sleeve opening and fluid hemline movement.",
+    shortDescription: "Extended ash oversized tee with fluid hem.",
+    price: 104,
+    inventory: 27,
+    featured: false,
+    categoryId: "cat-tshirts",
+    images: [
+      {
+        id: "prod-19-image-1",
+        url: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1200&q=80",
+        alt: "Ashes extended oversized tee"
+      }
+    ]
+  },
+  {
+    id: "prod-20",
     slug: "obsidian-oversized-poplin-shirt",
     name: "Obsidian Oversized Poplin Shirt",
     description:
@@ -342,14 +437,14 @@ export const altProducts: AltProduct[] = [
     categoryId: "cat-shirts",
     images: [
       {
-        id: "prod-15-image-1",
+        id: "prod-20-image-1",
         url: "https://images.unsplash.com/photo-1594938328870-9623159c8c99?auto=format&fit=crop&w=1200&q=80",
         alt: "Oversized black poplin shirt with sharp structure"
       }
     ]
   },
   {
-    id: "prod-16",
+    id: "prod-21",
     slug: "taupe-relaxed-oxford-shirt",
     name: "Taupe Relaxed Oxford Shirt",
     description:
@@ -361,14 +456,14 @@ export const altProducts: AltProduct[] = [
     categoryId: "cat-shirts",
     images: [
       {
-        id: "prod-16-image-1",
+        id: "prod-21-image-1",
         url: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1200&q=80",
         alt: "Taupe oversized button-up shirt"
       }
     ]
   },
   {
-    id: "prod-17",
+    id: "prod-22",
     slug: "shadow-striped-oversized-shirt",
     name: "Shadow Striped Oversized Shirt",
     description:
@@ -380,14 +475,14 @@ export const altProducts: AltProduct[] = [
     categoryId: "cat-shirts",
     images: [
       {
-        id: "prod-17-image-1",
+        id: "prod-22-image-1",
         url: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=1200&q=80",
         alt: "Oversized striped shirt with dark tailoring"
       }
     ]
   },
   {
-    id: "prod-18",
+    id: "prod-23",
     slug: "midnight-brushed-overshirt",
     name: "Midnight Brushed Overshirt",
     description:
@@ -399,14 +494,14 @@ export const altProducts: AltProduct[] = [
     categoryId: "cat-shirts",
     images: [
       {
-        id: "prod-18-image-1",
+        id: "prod-23-image-1",
         url: "https://images.unsplash.com/photo-1603252109303-2751441dd157?auto=format&fit=crop&w=1200&q=80",
         alt: "Midnight oversized overshirt layered over tee"
       }
     ]
   },
   {
-    id: "prod-19",
+    id: "prod-24",
     slug: "charcoal-longline-shirt",
     name: "Charcoal Longline Shirt",
     description:
@@ -418,14 +513,14 @@ export const altProducts: AltProduct[] = [
     categoryId: "cat-shirts",
     images: [
       {
-        id: "prod-19-image-1",
+        id: "prod-24-image-1",
         url: "https://images.unsplash.com/photo-1618517351616-38fb9c5210c6?auto=format&fit=crop&w=1200&q=80",
         alt: "Charcoal longline oversized shirt"
       }
     ]
   },
   {
-    id: "prod-20",
+    id: "prod-25",
     slug: "onyx-collarless-oversized-shirt",
     name: "Onyx Collarless Oversized Shirt",
     description:
@@ -437,9 +532,66 @@ export const altProducts: AltProduct[] = [
     categoryId: "cat-shirts",
     images: [
       {
-        id: "prod-20-image-1",
+        id: "prod-25-image-1",
         url: "https://images.unsplash.com/photo-1548883354-94bcfe321cbb?auto=format&fit=crop&w=1200&q=80",
         alt: "Onyx collarless oversized shirt with minimal cut"
+      }
+    ]
+  },
+  {
+    id: "prod-26",
+    slug: "obsidian-panel-oversized-shirt",
+    name: "Obsidian Panel Oversized Shirt",
+    description:
+      "Oversized shirt with tonal panel detailing, long shoulder line, and structured collar stand for refined drape.",
+    shortDescription: "Panel-detailed oversized shirt in obsidian.",
+    price: 182,
+    inventory: 19,
+    featured: true,
+    categoryId: "cat-shirts",
+    images: [
+      {
+        id: "prod-26-image-1",
+        url: "https://images.unsplash.com/photo-1618886614638-80e3c103d31a?auto=format&fit=crop&w=1200&q=80",
+        alt: "Obsidian panel oversized shirt with structure"
+      }
+    ]
+  },
+  {
+    id: "prod-27",
+    slug: "dark-taupe-wide-shirt",
+    name: "Dark Taupe Wide Shirt",
+    description:
+      "Wide-cut oversized shirt in dark taupe blend with dropped armhole and elongated sleeve posture.",
+    shortDescription: "Wide dark taupe oversized shirt silhouette.",
+    price: 174,
+    inventory: 24,
+    featured: false,
+    categoryId: "cat-shirts",
+    images: [
+      {
+        id: "prod-27-image-1",
+        url: "https://images.unsplash.com/photo-1603251579431-8041402bdeda?auto=format&fit=crop&w=1200&q=80",
+        alt: "Dark taupe wide oversized shirt"
+      }
+    ]
+  },
+  {
+    id: "prod-28",
+    slug: "blackline-oversized-shirt",
+    name: "Blackline Oversized Shirt",
+    description:
+      "Sharp oversized black shirt with minimal stitch lines and floating hem architecture for understated luxury movement.",
+    shortDescription: "Minimal stitched oversized shirt with floating hem.",
+    price: 186,
+    inventory: 20,
+    featured: true,
+    categoryId: "cat-shirts",
+    images: [
+      {
+        id: "prod-28-image-1",
+        url: "https://images.unsplash.com/photo-1603252109588-52982b1a7b0b?auto=format&fit=crop&w=1200&q=80",
+        alt: "Blackline oversized shirt with minimal style"
       }
     ]
   }
@@ -455,8 +607,8 @@ export const altOrders: AltOrder[] = [
     total: 568,
     items: [
       { productId: "prod-01", size: "L", quantity: 1, unitPrice: 220 },
-      { productId: "prod-07", size: "XL", quantity: 2, unitPrice: 95 },
-      { productId: "prod-16", size: "M", quantity: 1, unitPrice: 158 }
+      { productId: "prod-10", size: "XL", quantity: 2, unitPrice: 95 },
+      { productId: "prod-21", size: "M", quantity: 1, unitPrice: 158 }
     ]
   },
   {
@@ -468,8 +620,8 @@ export const altOrders: AltOrder[] = [
     total: 499,
     items: [
       { productId: "prod-02", size: "M", quantity: 1, unitPrice: 210 },
-      { productId: "prod-08", size: "L", quantity: 2, unitPrice: 89 },
-      { productId: "prod-11", size: "L", quantity: 1, unitPrice: 105 }
+      { productId: "prod-11", size: "L", quantity: 2, unitPrice: 89 },
+      { productId: "prod-14", size: "L", quantity: 1, unitPrice: 105 }
     ]
   },
   {
@@ -481,9 +633,9 @@ export const altOrders: AltOrder[] = [
     total: 591,
     items: [
       { productId: "prod-04", size: "XL", quantity: 1, unitPrice: 235 },
-      { productId: "prod-15", size: "L", quantity: 1, unitPrice: 165 },
-      { productId: "prod-10", size: "M", quantity: 1, unitPrice: 92 },
-      { productId: "prod-12", size: "L", quantity: 1, unitPrice: 99 }
+      { productId: "prod-20", size: "L", quantity: 1, unitPrice: 165 },
+      { productId: "prod-13", size: "M", quantity: 1, unitPrice: 92 },
+      { productId: "prod-15", size: "L", quantity: 1, unitPrice: 99 }
     ]
   },
   {
@@ -495,8 +647,8 @@ export const altOrders: AltOrder[] = [
     total: 546,
     items: [
       { productId: "prod-06", size: "M", quantity: 1, unitPrice: 248 },
-      { productId: "prod-18", size: "L", quantity: 1, unitPrice: 188 },
-      { productId: "prod-14", size: "XL", quantity: 1, unitPrice: 110 }
+      { productId: "prod-23", size: "L", quantity: 1, unitPrice: 188 },
+      { productId: "prod-17", size: "XL", quantity: 1, unitPrice: 110 }
     ]
   }
 ];
