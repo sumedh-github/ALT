@@ -1,23 +1,26 @@
-import { AltHero } from "@/components/alt/alt-hero";
+import { HomeBrandStatement } from "@/components/alt/home-brand-statement";
+import { HomeDropSection } from "@/components/alt/home-drop-section";
+import { HomeHero } from "@/components/alt/home-hero";
+import { HomeLookbookTeaser } from "@/components/alt/home-lookbook-teaser";
+import { HomeNewsletter } from "@/components/alt/home-newsletter";
 import { PageReveal } from "@/components/alt/page-reveal";
-import { ProductGrid } from "@/components/alt/product-grid";
-import { SectionIntro } from "@/components/alt/section-intro";
-import { altProducts } from "@/lib/mock-data";
 
 export default function HomePage() {
-  const featured = altProducts.filter((product) => product.featured).slice(0, 8);
-
   return (
-    <div className="space-y-14 pb-8">
-      <AltHero />
-      <PageReveal delay={0.15}>
-        <SectionIntro
-          eyebrow="Featured Pieces"
-          title="Cut for Presence"
-          body="ALT silhouettes are built in weight, shape, and restraint. Every piece is designed to hold calm power without visual noise."
-        />
+    <div className="space-y-14 pb-10">
+      <HomeHero />
+      <PageReveal delay={0.1}>
+        <HomeDropSection />
       </PageReveal>
-      <ProductGrid products={featured} />
+      <PageReveal delay={0.12}>
+        <HomeBrandStatement />
+      </PageReveal>
+      <PageReveal delay={0.15}>
+        <HomeLookbookTeaser />
+      </PageReveal>
+      <PageReveal delay={0.18}>
+        <HomeNewsletter />
+      </PageReveal>
     </div>
   );
 }
