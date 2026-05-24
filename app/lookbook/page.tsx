@@ -4,9 +4,9 @@ import { PageReveal } from "@/components/alt/page-reveal";
 import { SectionIntro } from "@/components/alt/section-intro";
 
 const frames = [
-  "https://res.cloudinary.com/demo/image/upload/v1720000000/alt-lookbook-1.jpg",
-  "https://res.cloudinary.com/demo/image/upload/v1720000000/alt-lookbook-2.jpg",
-  "https://res.cloudinary.com/demo/image/upload/v1720000000/alt-lookbook-3.jpg"
+  "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1400&q=80",
+  "https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?auto=format&fit=crop&w=1400&q=80",
+  "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1400&q=80"
 ];
 
 export const metadata = {
@@ -19,7 +19,7 @@ export default function LookbookPage() {
       <SectionIntro
         eyebrow="Lookbook"
         title="Editorial Volume Studies"
-        body="An ongoing visual study of oversized structure, layered proportion, and tonal tension inside the ALT language."
+        body="A visual record of ALT proportion: shadow-heavy palettes, long shoulders, grounded drape, and muted gold accents."
       />
       <div className="grid gap-4 md:grid-cols-[1.2fr_0.8fr]">
         {frames.map((frame, index) => (

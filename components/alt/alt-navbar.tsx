@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, ShoppingBag, User } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { Menu, ShoppingBag } from "lucide-react";
 
 import { CartDrawer } from "@/components/alt/cart-drawer";
 import { useCartSummary } from "@/hooks/use-cart-summary";
@@ -10,13 +9,13 @@ import { useUiStore } from "@/store/ui-store";
 
 const links = [
   { href: "/", label: "Home" },
-  { href: "/products", label: "Collection" },
-  { href: "/journal", label: "Journal" }
+  { href: "/shop", label: "Shop" },
+  { href: "/lookbook", label: "Lookbook" },
+  { href: "/about", label: "About" }
 ];
 
 export function AltNavbar() {
   const { quantity } = useCartSummary();
-  const { data: session } = useSession();
   const setCartOpen = useUiStore((state) => state.setCartOpen);
   const mobileMenuOpen = useUiStore((state) => state.mobileMenuOpen);
   const setMobileMenuOpen = useUiStore((state) => state.setMobileMenuOpen);
@@ -49,26 +48,19 @@ export function AltNavbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <Link
-            href={session ? "/account" : "/login"}
-            className="rounded-sm border border-surface p-2 text-taupe transition hover:border-gold hover:text-gold"
-          >
-            <User size={16} />
-          </Link>
-          <button
-            type="button"
-            className="relative rounded-sm border border-surface p-2 text-taupe transition hover:border-gold hover:text-gold"
-            onClick={() => setCartOpen(true)}
-          >
-            <ShoppingBag size={16} />
-            {quantity > 0 ? (
-              <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-gold px-1 text-center text-[10px] text-bg">
-                {quantity}
-              </span>
-            ) : null}
-          </button>
-        </div>
+        <button
+          type="button"
+          className="relative rounded-sm border border-surface p-2 text-taupe transition hover:border-gold hover:text-gold"
+          onClick={() => setCartOpen(true)}
+          aria-label="Open cart"
+        >
+          <ShoppingBag size={16} />
+          {quantity > 0 ? (
+            <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-gold px-1 text-center text-[10px] text-bg">
+              {quantity}
+            </span>
+          ) : null}
+        </button>
       </div>
 
       {mobileMenuOpen ? (

@@ -50,7 +50,10 @@ export function CartDrawer() {
             <div className="flex-1 space-y-4 overflow-y-auto">
               {items.length ? (
                 items.map((item) => (
-                  <div key={`${item.productId}-${item.size}`} className="border-b border-surface pb-3">
+                  <div
+                    key={`${item.productId}-${item.size}`}
+                    className="border-b border-surface pb-3"
+                  >
                     <p className="font-display text-xl">{item.name}</p>
                     <p className="text-xs uppercase tracking-[0.2em] text-muted">
                       {item.size} x {item.quantity}
@@ -79,8 +82,8 @@ export function CartDrawer() {
                 <span className="text-taupe">Subtotal</span>
                 <span className="text-gold">{formatCurrency(subtotal)}</span>
               </div>
-              <Link href="/checkout" onClick={() => setCartOpen(false)}>
-                <AltButton className="w-full">Proceed to Checkout</AltButton>
+              <Link href="/cart" onClick={() => setCartOpen(false)}>
+                <AltButton className="w-full">View Cart</AltButton>
               </Link>
             </div>
           </motion.aside>

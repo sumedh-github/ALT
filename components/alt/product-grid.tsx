@@ -1,10 +1,10 @@
 import { PageReveal } from "@/components/alt/page-reveal";
 import { ProductCard } from "@/components/alt/product-card";
-import type { Product } from "@/types";
+import type { AltProduct } from "@/lib/mock-data";
 
-type ProductGridProps = {
-  products: Product[];
-};
+interface ProductGridProps {
+  products: AltProduct[];
+}
 
 export function ProductGrid({ products }: ProductGridProps) {
   return (

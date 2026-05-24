@@ -33,9 +33,7 @@ export function CartView() {
               <button
                 type="button"
                 className="rounded-sm border border-surface px-2 py-1 hover:border-gold"
-                onClick={() =>
-                  updateQuantity(item.productId, item.size, item.quantity - 1)
-                }
+                onClick={() => updateQuantity(item.productId, item.size, item.quantity - 1)}
               >
                 -
               </button>
@@ -43,9 +41,7 @@ export function CartView() {
               <button
                 type="button"
                 className="rounded-sm border border-surface px-2 py-1 hover:border-gold"
-                onClick={() =>
-                  updateQuantity(item.productId, item.size, item.quantity + 1)
-                }
+                onClick={() => updateQuantity(item.productId, item.size, item.quantity + 1)}
               >
                 +
               </button>
@@ -69,8 +65,8 @@ export function CartView() {
         <p className="text-xs uppercase tracking-[0.2em] text-muted">
           Subtotal: <span className="text-gold">{formatCurrency(subtotal)}</span>
         </p>
-        <Link href="/checkout">
-          <AltButton variant="gold">Checkout</AltButton>
+        <Link href="/shop">
+          <AltButton variant="gold">Continue Shopping</AltButton>
         </Link>
       </div>
     </div>

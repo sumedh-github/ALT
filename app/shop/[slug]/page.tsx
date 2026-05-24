@@ -3,24 +3,30 @@ import { notFound } from "next/navigation";
 
 import { AddToCartForm } from "@/components/alt/add-to-cart-form";
 import { PageReveal } from "@/components/alt/page-reveal";
+import { altCategories, altProducts } from "@/lib/mock-data";
 import { formatCurrency } from "@/lib/utils";
-import { getProductBySlug } from "@/lib/products";
 
-type ProductDetailPageProps = {
+interface ShopProductPageProps {
   params: { slug: string };
-};
+}
 
-export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
-  const product = await getProductBySlug(params.slug);
+export default function ShopProductPage({ params }: ShopProductPageProps) {
+  const product = altProducts.find((entry) => entry.slug === params.slug);
   if (!product) {
     notFound();
   }
+
+  const category =
+    altCategories.find((entry) => entry.id === product.categoryId)?.name ?? "ALT";
 
   return (
     <div className="grid gap-10 pb-8 pt-4 lg:grid-cols-[1.1fr_0.9fr]">
       <PageReveal className="relative aspect-[4/5] overflow-hidden rounded-sm border border-surface">
         <Image
-          src={product.images[0]?.url ?? "https://res.cloudinary.com/demo/image/upload/v1/alt-fallback.jpg"}
+          src={
+            product.images[0]?.url ??
+            "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80"
+          }
           alt={product.images[0]?.alt ?? product.name}
           fill
           className="object-cover"
@@ -29,13 +35,16 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         />
       </PageReveal>
       <PageReveal delay={0.15} className="space-y-5">
-        <p className="text-xs uppercase tracking-[0.3em] text-taupe">{product.category}</p>
+        <p className="text-xs uppercase tracking-[0.3em] text-taupe">{category}</p>
         <h1 className="font-display text-5xl leading-[0.95]">{product.name}</h1>
         <p className="text-sm uppercase tracking-[0.22em] text-gold">
           {formatCurrency(product.price)}
         </p>
         <p className="max-w-xl text-sm leading-relaxed text-taupe sm:text-base">
           {product.description}
+        </p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted">
+          {product.inventory} units currently available
         </p>
         <AddToCartForm product={product} />
       </PageReveal>

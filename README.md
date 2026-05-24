@@ -1,43 +1,29 @@
-# Avero Loose Theory (ALT) Ecommerce
+# Avero Loose Theory (ALT) - Frontend Only
 
-Dark luxury streetwear ecommerce implementation built with Next.js App Router, TypeScript, Tailwind CSS, Prisma, NextAuth v5, Stripe, Cloudinary, Zustand, Framer Motion, and React Hook Form + Zod.
+ALT is a frontend-only Next.js 14 storefront prototype focused on dark luxury streetwear aesthetics.
 
 ## Stack
 
-- Next.js 14 + TypeScript
-- Tailwind CSS with ALT design tokens
-- Prisma ORM + PostgreSQL (Supabase-ready)
-- NextAuth.js v5 (Credentials + Google OAuth)
-- Stripe Checkout + webhook
-- Cloudinary signed upload endpoint
-- Zustand cart/UI stores
-- Framer Motion page reveals
-- React Hook Form + Zod schemas
+- Next.js 14 (App Router) + TypeScript
+- Tailwind CSS
+- Zustand for cart/UI state
+- Framer Motion for page reveals and interactions
 
-## Quick start
+## Routes
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Copy environment variables:
-   ```bash
-   cp .env.example .env.local
-   ```
-3. Generate Prisma client:
-   ```bash
-   npm run prisma:generate
-   ```
-4. Push schema and seed:
-   ```bash
-   npm run db:push
-   npm run prisma:seed
-   ```
-5. Run dev server:
-   ```bash
-   npm run dev
-   ```
+- `/` homepage
+- `/shop` product listing
+- `/shop/[slug]` product detail
+- `/lookbook`
+- `/about`
+- `/cart`
 
-Default admin seed credentials:
-- email: `admin@averoalt.com`
-- password: `AltAdmin123!`
+## Run locally
+
+```bash
+npm install
+echo 'NEXT_PUBLIC_SITE_URL="http://localhost:3000"' > .env
+npm run dev
+```
+
+Then open `http://localhost:3000`.

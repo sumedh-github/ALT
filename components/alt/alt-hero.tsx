@@ -22,10 +22,11 @@ export function AltHero() {
         </h1>
         <p className="mt-6 max-w-xl text-sm leading-relaxed text-taupe sm:text-base">
           ALT frames dark luxury streetwear through structure, weight, and
-          restraint. Each drop is cut for presence without noise.
+          restraint. Every silhouette is engineered to feel heavy, quiet, and
+          unmistakably present.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="/products">
+          <Link href="/shop">
             <AltButton>Shop Collection</AltButton>
           </Link>
           <Link href="/lookbook">

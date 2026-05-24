@@ -8,10 +8,10 @@ export default function NotFound() {
       <p className="text-xs uppercase tracking-[0.3em] text-taupe">404</p>
       <h1 className="font-display text-5xl">Lost in the Dark</h1>
       <p className="text-sm text-taupe">
-        This path does not exist in the ALT structure. Return to the collection.
+        This route is outside the current ALT frontend scope. Return to the shop.
       </p>
-      <Link href="/">
-        <AltButton>Back to Home</AltButton>
+      <Link href="/shop">
+        <AltButton>Back to Shop</AltButton>
       </Link>
     </section>
   );

@@ -1,9 +1,10 @@
 import Link from "next/link";
 
 const footerLinks = [
-  { href: "/products", label: "Collection" },
-  { href: "/journal", label: "Journal" },
-  { href: "/login", label: "Client Access" }
+  { href: "/shop", label: "Shop" },
+  { href: "/lookbook", label: "Lookbook" },
+  { href: "/about", label: "About" },
+  { href: "/cart", label: "Cart" }
 ];
 
 export function AltFooter() {

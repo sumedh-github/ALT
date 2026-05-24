@@ -5,7 +5,6 @@ import type { ReactNode } from "react";
 import "./globals.css";
 import { AltFooter } from "@/components/alt/alt-footer";
 import { AltNavbar } from "@/components/alt/alt-navbar";
-import { Providers } from "@/app/providers";
 
 const display = Cormorant_Garamond({
   variable: "--font-display",
@@ -22,26 +21,24 @@ const body = DM_Sans({
 export const metadata: Metadata = {
   title: "Avero Loose Theory | The Oversized Theory",
   description:
-    "Avero Loose Theory is dark luxury streetwear built around quiet silhouettes, tactile layers, and oversized discipline."
+    "Dark luxury streetwear with oversized proportion, tactile structure, and silent confidence."
 };
 
-type RootLayoutProps = {
+interface RootLayoutProps {
   children: ReactNode;
-};
+}
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body>
-        <Providers>
-          <div className="min-h-screen bg-bg text-text">
-            <AltNavbar />
-            <main className="mx-auto w-full max-w-7xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
-              {children}
-            </main>
-            <AltFooter />
-          </div>
-        </Providers>
+        <div className="min-h-screen bg-bg text-text">
+          <AltNavbar />
+          <main className="mx-auto w-full max-w-7xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
+            {children}
+          </main>
+          <AltFooter />
+        </div>
       </body>
     </html>
   );

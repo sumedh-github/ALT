@@ -11,7 +11,7 @@ export default function CartPage() {
       <SectionIntro
         eyebrow="Cart"
         title="Selected Silhouettes"
-        body="Review each piece and refine your shape before checkout."
+        body="Review your selected pieces and adjust quantities before returning to shop."
       />
       <CartView />
     </div>

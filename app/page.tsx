@@ -2,10 +2,10 @@ import { AltHero } from "@/components/alt/alt-hero";
 import { PageReveal } from "@/components/alt/page-reveal";
 import { ProductGrid } from "@/components/alt/product-grid";
 import { SectionIntro } from "@/components/alt/section-intro";
-import { getFeaturedProducts } from "@/lib/products";
+import { altProducts } from "@/lib/mock-data";
 
-export default async function HomePage() {
-  const products = await getFeaturedProducts();
+export default function HomePage() {
+  const featured = altProducts.filter((product) => product.featured).slice(0, 6);
 
   return (
     <div className="space-y-14 pb-8">
@@ -14,10 +14,10 @@ export default async function HomePage() {
         <SectionIntro
           eyebrow="Featured Pieces"
           title="Cut for Presence"
-          body="Volume-driven essentials designed to drape with intent. ALT staples are built to stay calm while everything around them performs."
+          body="ALT silhouettes are built in weight, shape, and restraint. Every piece is designed to hold calm power without visual noise."
         />
       </PageReveal>
-      <ProductGrid products={products} />
+      <ProductGrid products={featured} />
     </div>
   );
 }

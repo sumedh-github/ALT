@@ -3,20 +3,20 @@
 import { useState } from "react";
 
 import { AltButton } from "@/components/alt/alt-button";
+import type { AltProduct } from "@/lib/mock-data";
 import { useCartStore } from "@/store/cart-store";
 import { useUiStore } from "@/store/ui-store";
-import type { Product } from "@/types";
 
-const sizes = ["XS", "S", "M", "L", "XL"];
+const sizes = ["XS", "S", "M", "L", "XL"] as const;
 
-type AddToCartFormProps = {
-  product: Product;
-};
+interface AddToCartFormProps {
+  product: AltProduct;
+}
 
 export function AddToCartForm({ product }: AddToCartFormProps) {
   const addItem = useCartStore((state) => state.addItem);
   const setCartOpen = useUiStore((state) => state.setCartOpen);
-  const [size, setSize] = useState("M");
+  const [size, setSize] = useState<(typeof sizes)[number]>("M");
   const [quantity, setQuantity] = useState(1);
 
   return (
