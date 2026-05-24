@@ -77,7 +77,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-01-image-1",
-        url: "https://picsum.photos/seed/alt-product-1/600/800",
+        url: "https://source.unsplash.com/900x1200/?obsidian,hoodie,hoodie,editorial,fashion&sig=1",
         alt: "Model wearing oversized black hoodie in studio"
       }
     ]
@@ -96,7 +96,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-02-image-1",
-        url: "https://picsum.photos/seed/alt-product-2/600/800",
+        url: "https://source.unsplash.com/900x1200/?charcoal,volume,hoodie,hoodie,editorial,fashion&sig=2",
         alt: "Charcoal oversized hoodie with heavy silhouette"
       }
     ]
@@ -115,7 +115,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-03-image-1",
-        url: "https://picsum.photos/seed/alt-product-3/600/800",
+        url: "https://source.unsplash.com/900x1200/?taupe,shadow,hoodie,hoodie,editorial,fashion&sig=3",
         alt: "Oversized taupe hoodie with relaxed fit"
       }
     ]
@@ -134,7 +134,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-04-image-1",
-        url: "https://picsum.photos/seed/alt-product-4/600/800",
+        url: "https://source.unsplash.com/900x1200/?midnight,layer,hoodie,hoodie,editorial,fashion&sig=4",
         alt: "Midnight oversized hoodie in dark light"
       }
     ]
@@ -153,7 +153,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-05-image-1",
-        url: "https://picsum.photos/seed/alt-product-5/600/800",
+        url: "https://source.unsplash.com/900x1200/?cinder,heavyweight,hoodie,hoodie,editorial,fashion&sig=5",
         alt: "Cinder oversized heavyweight hoodie"
       }
     ]
@@ -172,7 +172,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-06-image-1",
-        url: "https://picsum.photos/seed/alt-product-6/600/800",
+        url: "https://source.unsplash.com/900x1200/?ash,drape,hoodie,hoodie,editorial,fashion&sig=6",
         alt: "Ash oversized zip hoodie in shadow"
       }
     ]
@@ -191,7 +191,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-07-image-1",
-        url: "https://picsum.photos/seed/alt-product-7/600/800",
+        url: "https://source.unsplash.com/900x1200/?graphite,dropped,hoodie,hoodie,editorial,fashion&sig=7",
         alt: "Graphite oversized hoodie with dropped shoulder"
       }
     ]
@@ -210,7 +210,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-08-image-1",
-        url: "https://picsum.photos/seed/alt-product-8/600/800",
+        url: "https://source.unsplash.com/900x1200/?stonewashed,hoodie,hoodie,editorial,fashion&sig=8",
         alt: "Stonewashed oversized hoodie in low light"
       }
     ]
@@ -229,7 +229,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-09-image-1",
-        url: "https://picsum.photos/seed/alt-product-9/600/800",
+        url: "https://source.unsplash.com/900x1200/?ember,washed,hoodie,hoodie,editorial,fashion&sig=9",
         alt: "Ember washed oversized hoodie"
       }
     ]
@@ -248,8 +248,8 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-10-image-1",
-        url: "https://picsum.photos/seed/alt-product-10/600/800",
-        alt: "Black oversized t-shirt with wide shoulder cut"
+        url: "https://source.unsplash.com/900x1200/?gold,stitch,tee,oversized,tshirt,editorial,fashion&sig=10",
+        alt: "Black oversized,tshirt with wide shoulder cut"
       }
     ]
   },
@@ -267,7 +267,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-11-image-1",
-        url: "https://picsum.photos/seed/alt-product-11/600/800",
+        url: "https://source.unsplash.com/900x1200/?washed,onyx,box,tee,oversized,tshirt,editorial,fashion&sig=11",
         alt: "Oversized washed black t-shirt on model"
       }
     ]
@@ -277,7 +277,7 @@ export const altProducts: AltProduct[] = [
     slug: "deep-charcoal-drape-tee",
     name: "Deep Charcoal Drape Tee",
     description:
-      "Fluid oversized t-shirt with softened shoulder drop and elongated body designed to fall cleanly over layered hems.",
+      "Fluid oversized,tshirt with softened shoulder drop and elongated body designed to fall cleanly over layered hems.",
     shortDescription: "Draped oversized tee with long fluid body.",
     price: 98,
     inventory: 31,
@@ -286,7 +286,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-12-image-1",
-        url: "https://picsum.photos/seed/alt-product-12/600/800",
+        url: "https://source.unsplash.com/900x1200/?deep,charcoal,drape,tee,oversized,tshirt,editorial,fashion&sig=12",
         alt: "Deep charcoal oversized drape t-shirt"
       }
     ]
@@ -305,8 +305,8 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-13-image-1",
-        url: "https://picsum.photos/seed/alt-product-13/600/800",
-        alt: "Faded bone oversized t-shirt in studio"
+        url: "https://source.unsplash.com/900x1200/?bone,wide,cut,tee,oversized,tshirt,editorial,fashion&sig=13",
+        alt: "Faded bone oversized,tshirt in studio"
       }
     ]
   },
@@ -324,7 +324,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-14-image-1",
-        url: "https://picsum.photos/seed/alt-product-14/600/800",
+        url: "https://source.unsplash.com/900x1200/?graphite,panel,tee,oversized,tshirt,editorial,fashion&sig=14",
         alt: "Graphite oversized panel t-shirt"
       }
     ]
@@ -343,7 +343,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-15-image-1",
-        url: "https://picsum.photos/seed/alt-product-15/600/800",
+        url: "https://source.unsplash.com/900x1200/?muted,taupe,tee,oversized,tshirt,editorial,fashion&sig=15",
         alt: "Muted taupe oversized tee with relaxed fit"
       }
     ]
@@ -362,7 +362,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-16-image-1",
-        url: "https://picsum.photos/seed/alt-product-16/600/800",
+        url: "https://source.unsplash.com/900x1200/?phantom,layer,tee,oversized,tshirt,editorial,fashion&sig=16",
         alt: "Phantom layered oversized tee"
       }
     ]
@@ -381,7 +381,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-17-image-1",
-        url: "https://picsum.photos/seed/alt-product-17/600/800",
+        url: "https://source.unsplash.com/900x1200/?blackstone,split,hem,tee,oversized,tshirt,editorial,fashion&sig=17",
         alt: "Blackstone oversized split hem tee"
       }
     ]
@@ -400,7 +400,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-18-image-1",
-        url: "https://picsum.photos/seed/alt-product-18/600/800",
+        url: "https://source.unsplash.com/900x1200/?inkwide,signature,tee,oversized,tshirt,editorial,fashion&sig=18",
         alt: "Inkwide oversized tee with broad fit"
       }
     ]
@@ -419,7 +419,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-19-image-1",
-        url: "https://picsum.photos/seed/alt-product-19/600/800",
+        url: "https://source.unsplash.com/900x1200/?ashes,extended,tee,oversized,tshirt,editorial,fashion&sig=19",
         alt: "Ashes extended oversized tee"
       }
     ]
@@ -438,7 +438,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-20-image-1",
-        url: "https://picsum.photos/seed/alt-product-20/600/800",
+        url: "https://source.unsplash.com/900x1200/?obsidian,poplin,shirt,oversized,shirt,editorial,fashion&sig=20",
         alt: "Oversized black poplin shirt with sharp structure"
       }
     ]
@@ -457,7 +457,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-21-image-1",
-        url: "https://picsum.photos/seed/alt-product-21/600/800",
+        url: "https://source.unsplash.com/900x1200/?taupe,relaxed,oxford,shirt,oversized,shirt,editorial,fashion&sig=21",
         alt: "Taupe oversized button-up shirt"
       }
     ]
@@ -468,7 +468,7 @@ export const altProducts: AltProduct[] = [
     name: "Shadow Striped Oversized Shirt",
     description:
       "Wide striped woven shirt with low armhole construction and long back body for directional oversized layering.",
-    shortDescription: "Striped oversized shirt with directional cut.",
+    shortDescription: "Striped oversized,shirt with directional cut.",
     price: 172,
     inventory: 18,
     featured: false,
@@ -476,7 +476,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-22-image-1",
-        url: "https://picsum.photos/seed/alt-product-22/600/800",
+        url: "https://source.unsplash.com/900x1200/?shadow,striped,shirt,oversized,shirt,editorial,fashion&sig=22",
         alt: "Oversized striped shirt with dark tailoring"
       }
     ]
@@ -495,7 +495,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-23-image-1",
-        url: "https://picsum.photos/seed/alt-product-23/600/800",
+        url: "https://source.unsplash.com/900x1200/?midnight,brushed,overshirt,oversized,shirt,editorial,fashion&sig=23",
         alt: "Midnight oversized overshirt layered over tee"
       }
     ]
@@ -505,8 +505,8 @@ export const altProducts: AltProduct[] = [
     slug: "charcoal-longline-shirt",
     name: "Charcoal Longline Shirt",
     description:
-      "Longline oversized shirt in dark charcoal weave with dropped shoulder profile and softened curved hem.",
-    shortDescription: "Longline oversized shirt in charcoal weave.",
+      "Longline oversized,shirt in dark charcoal weave with dropped shoulder profile and softened curved hem.",
+    shortDescription: "Longline oversized,shirt in charcoal weave.",
     price: 176,
     inventory: 21,
     featured: false,
@@ -514,8 +514,8 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-24-image-1",
-        url: "https://picsum.photos/seed/alt-product-24/600/800",
-        alt: "Charcoal longline oversized shirt"
+        url: "https://source.unsplash.com/900x1200/?charcoal,longline,shirt,oversized,shirt,editorial,fashion&sig=24",
+        alt: "Charcoal longline oversized,shirt"
       }
     ]
   },
@@ -524,8 +524,8 @@ export const altProducts: AltProduct[] = [
     slug: "onyx-collarless-oversized-shirt",
     name: "Onyx Collarless Oversized Shirt",
     description:
-      "Collarless oversized shirt with clean placket and generous body width, made for minimal layered styling.",
-    shortDescription: "Collarless oversized shirt in onyx tone.",
+      "Collarless oversized,shirt with clean placket and generous body width, made for minimal layered styling.",
+    shortDescription: "Collarless oversized,shirt in onyx tone.",
     price: 168,
     inventory: 23,
     featured: false,
@@ -533,8 +533,8 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-25-image-1",
-        url: "https://picsum.photos/seed/alt-product-25/600/800",
-        alt: "Onyx collarless oversized shirt with minimal cut"
+        url: "https://source.unsplash.com/900x1200/?onyx,collarless,shirt,oversized,shirt,editorial,fashion&sig=25",
+        alt: "Onyx collarless oversized,shirt with minimal cut"
       }
     ]
   },
@@ -544,7 +544,7 @@ export const altProducts: AltProduct[] = [
     name: "Obsidian Panel Oversized Shirt",
     description:
       "Oversized shirt with tonal panel detailing, long shoulder line, and structured collar stand for refined drape.",
-    shortDescription: "Panel-detailed oversized shirt in obsidian.",
+    shortDescription: "Panel-detailed oversized,shirt in obsidian.",
     price: 182,
     inventory: 19,
     featured: true,
@@ -552,8 +552,8 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-26-image-1",
-        url: "https://picsum.photos/seed/alt-product-26/600/800",
-        alt: "Obsidian panel oversized shirt with structure"
+        url: "https://source.unsplash.com/900x1200/?obsidian,panel,shirt,oversized,shirt,editorial,fashion&sig=26",
+        alt: "Obsidian panel oversized,shirt with structure"
       }
     ]
   },
@@ -562,8 +562,8 @@ export const altProducts: AltProduct[] = [
     slug: "dark-taupe-wide-shirt",
     name: "Dark Taupe Wide Shirt",
     description:
-      "Wide-cut oversized shirt in dark taupe blend with dropped armhole and elongated sleeve posture.",
-    shortDescription: "Wide dark taupe oversized shirt silhouette.",
+      "Wide-cut oversized,shirt in dark taupe blend with dropped armhole and elongated sleeve posture.",
+    shortDescription: "Wide dark taupe oversized,shirt silhouette.",
     price: 174,
     inventory: 24,
     featured: false,
@@ -571,8 +571,8 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-27-image-1",
-        url: "https://picsum.photos/seed/alt-product-27/600/800",
-        alt: "Dark taupe wide oversized shirt"
+        url: "https://source.unsplash.com/900x1200/?dark,taupe,wide,shirt,oversized,shirt,editorial,fashion&sig=27",
+        alt: "Dark taupe wide oversized,shirt"
       }
     ]
   },
@@ -582,7 +582,7 @@ export const altProducts: AltProduct[] = [
     name: "Blackline Oversized Shirt",
     description:
       "Sharp oversized black shirt with minimal stitch lines and floating hem architecture for understated luxury movement.",
-    shortDescription: "Minimal stitched oversized shirt with floating hem.",
+    shortDescription: "Minimal stitched oversized,shirt with floating hem.",
     price: 186,
     inventory: 20,
     featured: true,
@@ -590,8 +590,8 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-28-image-1",
-        url: "https://picsum.photos/seed/alt-product-28/600/800",
-        alt: "Blackline oversized shirt with minimal style"
+        url: "https://source.unsplash.com/900x1200/?blackline,shirt,oversized,shirt,editorial,fashion&sig=28",
+        alt: "Blackline oversized,shirt with minimal style"
       }
     ]
   }
