@@ -4,10 +4,26 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 
 import { AltButton } from "@/components/alt/alt-button";
+import { AltLogoEmblem } from "@/components/alt/alt-logo-emblem";
 
 export function AltHero() {
   return (
     <section className="noise-overlay relative overflow-hidden rounded-md border border-taupe/20 bg-alt-grain px-6 py-14 sm:px-10 sm:py-20">
+      <div className="pointer-events-none absolute -right-10 -bottom-20 hidden md:block">
+        <p className="font-display text-[180px] leading-none tracking-[0.2em] text-gold/[0.07]">
+          ALT
+        </p>
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: -20, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+        className="absolute right-6 top-6 hidden lg:block"
+      >
+        <AltLogoEmblem className="w-[250px]" />
+      </motion.div>
+
       <motion.div
         initial={{ opacity: 0, scale: 0.94, y: 28 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}

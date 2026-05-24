@@ -1,14 +1,18 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import Link from "next/link";
 import { X } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 import { AltButton } from "@/components/alt/alt-button";
 import { useCartSummary } from "@/hooks/use-cart-summary";
 import { formatCurrency } from "@/lib/utils";
 import { useCartStore } from "@/store/cart-store";
 import { useUiStore } from "@/store/ui-store";
+
+const cartFallbackImage =
+  "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=80";
 
 export function CartDrawer() {
   const { items, subtotal } = useCartSummary();
@@ -52,21 +56,32 @@ export function CartDrawer() {
                 items.map((item) => (
                   <div
                     key={`${item.productId}-${item.size}`}
-                    className="border-b border-surface pb-3"
+                    className="flex gap-3 border-b border-surface pb-3"
                   >
-                    <p className="font-display text-xl">{item.name}</p>
-                    <p className="text-xs uppercase tracking-[0.2em] text-muted">
-                      {item.size} x {item.quantity}
-                    </p>
-                    <div className="mt-2 flex items-center justify-between">
-                      <p className="text-gold">{formatCurrency(item.price * item.quantity)}</p>
-                      <button
-                        type="button"
-                        className="text-xs uppercase tracking-[0.15em] text-taupe transition hover:text-gold"
-                        onClick={() => removeItem(item.productId, item.size)}
-                      >
-                        Remove
-                      </button>
+                    <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-sm border border-surface">
+                      <Image
+                        src={item.image || cartFallbackImage}
+                        alt={item.name}
+                        fill
+                        className="object-cover"
+                        sizes="64px"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-display text-xl">{item.name}</p>
+                      <p className="text-xs uppercase tracking-[0.2em] text-muted">
+                        {item.size} x {item.quantity}
+                      </p>
+                      <div className="mt-2 flex items-center justify-between">
+                        <p className="text-gold">{formatCurrency(item.price * item.quantity)}</p>
+                        <button
+                          type="button"
+                          className="text-xs uppercase tracking-[0.15em] text-taupe transition hover:text-gold"
+                          onClick={() => removeItem(item.productId, item.size)}
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))

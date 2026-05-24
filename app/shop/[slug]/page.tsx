@@ -17,6 +17,10 @@ const legacySlugRedirects: Record<string, string> = {
   "charcaol-veil-trench": "shadow-striped-oversized-shirt"
 };
 
+export function generateStaticParams() {
+  return altProducts.map((product) => ({ slug: product.slug }));
+}
+
 export default function ShopProductPage({ params }: ShopProductPageProps) {
   const normalizedSlug = params.slug.toLowerCase();
   const redirectSlug = legacySlugRedirects[normalizedSlug];
