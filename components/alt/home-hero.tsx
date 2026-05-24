@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 
 const container = {
@@ -19,7 +20,19 @@ const item = {
 export function HomeHero() {
   return (
     <section className="noise-overlay relative min-h-[calc(100vh-6rem)] overflow-hidden rounded-md border border-surface/80 bg-bg px-6 py-14 sm:px-10 sm:py-20">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(201,169,110,0.10),transparent_40%)]" />
+      <div className="absolute inset-0">
+        <Image
+          src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1800&q=80"
+          alt="ALT hero background editorial frame"
+          fill
+          priority
+          className="object-cover opacity-35"
+          sizes="100vw"
+        />
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-r from-bg/90 via-bg/78 to-bg/60" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(201,169,110,0.13),transparent_40%)]" />
+
       <motion.div
         variants={container}
         initial="hidden"
