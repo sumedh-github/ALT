@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
+import { AltLogoEmblem } from "@/components/alt/alt-logo-emblem";
+
 const container = {
   hidden: { opacity: 0 },
   visible: {
@@ -26,11 +28,11 @@ export function HomeHero() {
           alt="ALT hero background editorial frame"
           fill
           priority
-          className="object-cover opacity-35"
+          className="object-cover opacity-60"
           sizes="100vw"
         />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-r from-bg/90 via-bg/78 to-bg/60" />
+      <div className="absolute inset-0 bg-gradient-to-r from-bg/82 via-bg/63 to-bg/42" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(201,169,110,0.13),transparent_40%)]" />
 
       <motion.div
@@ -71,6 +73,24 @@ export function HomeHero() {
             Enter the Drop
           </Link>
         </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92, y: 14 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.22, ease: "easeOut" }}
+          className="pointer-events-none absolute right-[3%] top-[14%] hidden w-[320px] lg:block"
+        >
+          <AltLogoEmblem />
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.75, delay: 0.22, ease: "easeOut" }}
+        className="relative mt-10 ml-4 w-[180px] sm:w-[230px] lg:hidden"
+      >
+        <AltLogoEmblem />
       </motion.div>
     </section>
   );
