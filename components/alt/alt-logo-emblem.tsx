@@ -8,23 +8,15 @@ interface AltLogoEmblemProps {
 
 export function AltLogoEmblem({ className }: AltLogoEmblemProps) {
   return (
-    <div
-      className={cn(
-        "relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#0d1118] to-[#0a0d12] p-3 shadow-luxe",
-        className
-      )}
-    >
-      <div className="absolute -left-10 -top-10 h-28 w-28 rounded-full bg-gold/10 blur-2xl" />
-      <div className="relative overflow-hidden rounded-[1.5rem]">
-        <Image
-          src="/alt-logo-mark.svg"
-          alt="Avero Loose Theory ALT mark"
-          width={900}
-          height={900}
-          className="h-auto w-full object-cover"
-          priority
-        />
-      </div>
+    <div className={cn("relative", className)}>
+      <Image
+        src="/alt-logo-mark.svg"
+        alt="Avero Loose Theory ALT mark"
+        width={900}
+        height={900}
+        priority
+        className="h-auto w-full object-contain drop-shadow-[0_12px_30px_rgba(0,0,0,0.45)]"
+      />
     </div>
   );
 }
