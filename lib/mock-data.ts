@@ -77,7 +77,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-01-image-1",
-        url: "https://source.unsplash.com/900x1200/?obsidian,hoodie,hoodie,editorial,fashion&sig=1",
+        url: "https://images.unsplash.com/photo-1609873814058-a8928924184a?auto=format&fit=crop&w=900&q=80",
         alt: "Model wearing oversized black hoodie in studio"
       }
     ]
@@ -96,7 +96,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-02-image-1",
-        url: "https://source.unsplash.com/900x1200/?charcoal,volume,hoodie,hoodie,editorial,fashion&sig=2",
+        url: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=900&q=80",
         alt: "Charcoal oversized hoodie with heavy silhouette"
       }
     ]
@@ -115,7 +115,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-03-image-1",
-        url: "https://source.unsplash.com/900x1200/?taupe,shadow,hoodie,hoodie,editorial,fashion&sig=3",
+        url: "https://images.unsplash.com/photo-1578681994506-b8f463449011?auto=format&fit=crop&w=900&q=80",
         alt: "Oversized taupe hoodie with relaxed fit"
       }
     ]
@@ -134,7 +134,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-04-image-1",
-        url: "https://source.unsplash.com/900x1200/?midnight,layer,hoodie,hoodie,editorial,fashion&sig=4",
+        url: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=900&q=80",
         alt: "Midnight oversized hoodie in dark light"
       }
     ]
@@ -153,7 +153,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-05-image-1",
-        url: "https://source.unsplash.com/900x1200/?cinder,heavyweight,hoodie,hoodie,editorial,fashion&sig=5",
+        url: "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?auto=format&fit=crop&w=900&q=80",
         alt: "Cinder oversized heavyweight hoodie"
       }
     ]
@@ -172,7 +172,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-06-image-1",
-        url: "https://source.unsplash.com/900x1200/?ash,drape,hoodie,hoodie,editorial,fashion&sig=6",
+        url: "https://images.unsplash.com/photo-1593032465171-8bd2f73fcf7c?auto=format&fit=crop&w=900&q=80",
         alt: "Ash oversized zip hoodie in shadow"
       }
     ]
@@ -191,7 +191,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-07-image-1",
-        url: "https://source.unsplash.com/900x1200/?graphite,dropped,hoodie,hoodie,editorial,fashion&sig=7",
+        url: "https://images.unsplash.com/photo-1523398002811-999ca8dec234?auto=format&fit=crop&w=900&q=80",
         alt: "Graphite oversized hoodie with dropped shoulder"
       }
     ]
@@ -210,7 +210,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-08-image-1",
-        url: "https://source.unsplash.com/900x1200/?stonewashed,hoodie,hoodie,editorial,fashion&sig=8",
+        url: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=900&q=80",
         alt: "Stonewashed oversized hoodie in low light"
       }
     ]
@@ -229,7 +229,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-09-image-1",
-        url: "https://source.unsplash.com/900x1200/?ember,washed,hoodie,hoodie,editorial,fashion&sig=9",
+        url: "https://images.unsplash.com/photo-1619603364904-c0498317e145?auto=format&fit=crop&w=900&q=80",
         alt: "Ember washed oversized hoodie"
       }
     ]
@@ -248,7 +248,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-10-image-1",
-        url: "https://source.unsplash.com/900x1200/?gold,stitch,tee,oversized,tshirt,editorial,fashion&sig=10",
+        url: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=80",
         alt: "Black oversized,tshirt with wide shoulder cut"
       }
     ]
@@ -267,7 +267,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-11-image-1",
-        url: "https://source.unsplash.com/900x1200/?washed,onyx,box,tee,oversized,tshirt,editorial,fashion&sig=11",
+        url: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?auto=format&fit=crop&w=900&q=80",
         alt: "Oversized washed black t-shirt on model"
       }
     ]
@@ -286,7 +286,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-12-image-1",
-        url: "https://source.unsplash.com/900x1200/?deep,charcoal,drape,tee,oversized,tshirt,editorial,fashion&sig=12",
+        url: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=900&q=80",
         alt: "Deep charcoal oversized drape t-shirt"
       }
     ]
@@ -305,7 +305,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-13-image-1",
-        url: "https://source.unsplash.com/900x1200/?bone,wide,cut,tee,oversized,tshirt,editorial,fashion&sig=13",
+        url: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=900&q=80",
         alt: "Faded bone oversized,tshirt in studio"
       }
     ]
@@ -324,7 +324,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-14-image-1",
-        url: "https://source.unsplash.com/900x1200/?graphite,panel,tee,oversized,tshirt,editorial,fashion&sig=14",
+        url: "https://images.unsplash.com/photo-1559582798-678dfc71ccd8?auto=format&fit=crop&w=900&q=80",
         alt: "Graphite oversized panel t-shirt"
       }
     ]
@@ -343,7 +343,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-15-image-1",
-        url: "https://source.unsplash.com/900x1200/?muted,taupe,tee,oversized,tshirt,editorial,fashion&sig=15",
+        url: "https://images.unsplash.com/photo-1618677831708-0e7fda314f4b?auto=format&fit=crop&w=900&q=80",
         alt: "Muted taupe oversized tee with relaxed fit"
       }
     ]
@@ -362,7 +362,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-16-image-1",
-        url: "https://source.unsplash.com/900x1200/?phantom,layer,tee,oversized,tshirt,editorial,fashion&sig=16",
+        url: "https://images.unsplash.com/photo-1618354691321-e851c56960d1?auto=format&fit=crop&w=900&q=80",
         alt: "Phantom layered oversized tee"
       }
     ]
@@ -381,7 +381,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-17-image-1",
-        url: "https://source.unsplash.com/900x1200/?blackstone,split,hem,tee,oversized,tshirt,editorial,fashion&sig=17",
+        url: "https://images.unsplash.com/photo-1603252109360-909baaf261c7?auto=format&fit=crop&w=900&q=80",
         alt: "Blackstone oversized split hem tee"
       }
     ]
@@ -400,7 +400,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-18-image-1",
-        url: "https://source.unsplash.com/900x1200/?inkwide,signature,tee,oversized,tshirt,editorial,fashion&sig=18",
+        url: "https://images.unsplash.com/photo-1527719327859-c6ce80353573?auto=format&fit=crop&w=900&q=80",
         alt: "Inkwide oversized tee with broad fit"
       }
     ]
@@ -419,7 +419,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-19-image-1",
-        url: "https://source.unsplash.com/900x1200/?ashes,extended,tee,oversized,tshirt,editorial,fashion&sig=19",
+        url: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80",
         alt: "Ashes extended oversized tee"
       }
     ]
@@ -438,7 +438,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-20-image-1",
-        url: "https://source.unsplash.com/900x1200/?obsidian,poplin,shirt,oversized,shirt,editorial,fashion&sig=20",
+        url: "https://images.unsplash.com/photo-1594938328870-9623159c8c99?auto=format&fit=crop&w=900&q=80",
         alt: "Oversized black poplin shirt with sharp structure"
       }
     ]
@@ -457,7 +457,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-21-image-1",
-        url: "https://source.unsplash.com/900x1200/?taupe,relaxed,oxford,shirt,oversized,shirt,editorial,fashion&sig=21",
+        url: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=900&q=80",
         alt: "Taupe oversized button-up shirt"
       }
     ]
@@ -476,7 +476,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-22-image-1",
-        url: "https://source.unsplash.com/900x1200/?shadow,striped,shirt,oversized,shirt,editorial,fashion&sig=22",
+        url: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=900&q=80",
         alt: "Oversized striped shirt with dark tailoring"
       }
     ]
@@ -495,7 +495,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-23-image-1",
-        url: "https://source.unsplash.com/900x1200/?midnight,brushed,overshirt,oversized,shirt,editorial,fashion&sig=23",
+        url: "https://images.unsplash.com/photo-1603252109303-2751441dd157?auto=format&fit=crop&w=900&q=80",
         alt: "Midnight oversized overshirt layered over tee"
       }
     ]
@@ -514,7 +514,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-24-image-1",
-        url: "https://source.unsplash.com/900x1200/?charcoal,longline,shirt,oversized,shirt,editorial,fashion&sig=24",
+        url: "https://images.unsplash.com/photo-1618517351616-38fb9c5210c6?auto=format&fit=crop&w=900&q=80",
         alt: "Charcoal longline oversized,shirt"
       }
     ]
@@ -533,7 +533,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-25-image-1",
-        url: "https://source.unsplash.com/900x1200/?onyx,collarless,shirt,oversized,shirt,editorial,fashion&sig=25",
+        url: "https://images.unsplash.com/photo-1548883354-94bcfe321cbb?auto=format&fit=crop&w=900&q=80",
         alt: "Onyx collarless oversized,shirt with minimal cut"
       }
     ]
@@ -552,7 +552,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-26-image-1",
-        url: "https://source.unsplash.com/900x1200/?obsidian,panel,shirt,oversized,shirt,editorial,fashion&sig=26",
+        url: "https://images.unsplash.com/photo-1618886614638-80e3c103d31a?auto=format&fit=crop&w=900&q=80",
         alt: "Obsidian panel oversized,shirt with structure"
       }
     ]
@@ -571,7 +571,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-27-image-1",
-        url: "https://source.unsplash.com/900x1200/?dark,taupe,wide,shirt,oversized,shirt,editorial,fashion&sig=27",
+        url: "https://images.unsplash.com/photo-1603251579431-8041402bdeda?auto=format&fit=crop&w=900&q=80",
         alt: "Dark taupe wide oversized,shirt"
       }
     ]
@@ -590,7 +590,7 @@ export const altProducts: AltProduct[] = [
     images: [
       {
         id: "prod-28-image-1",
-        url: "https://source.unsplash.com/900x1200/?blackline,shirt,oversized,shirt,editorial,fashion&sig=28",
+        url: "https://images.unsplash.com/photo-1603252109588-52982b1a7b0b?auto=format&fit=crop&w=900&q=80",
         alt: "Blackline oversized,shirt with minimal style"
       }
     ]
