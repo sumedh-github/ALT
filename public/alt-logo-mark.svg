@@ -21,8 +21,7 @@
   <rect width="900" height="900" fill="#090E16"/>
   <rect width="900" height="900" fill="url(#bg)"/>
 
-  <circle cx="450" cy="455" r="320" fill="#0B1018" fill-opacity="0.88"/>
-  <circle cx="450" cy="455" r="320" stroke="#232934" stroke-width="2"/>
+  <circle cx="450" cy="455" r="320" fill="#0B1018" fill-opacity="0.9"/>
 
   <text x="230" y="470" font-size="220" letter-spacing="14" fill="url(#gold)" font-family="Cormorant Garamond, serif">A</text>
   <text x="415" y="470" font-size="220" letter-spacing="12" fill="url(#gold)" font-family="Cormorant Garamond, serif">L</text>
@@ -38,10 +37,10 @@
   <path d="M692 455L744 501" stroke="#4B4F56" stroke-width="3"/>
   <path d="M744 501L730 527" stroke="#4B4F56" stroke-width="3"/>
 
-  <text x="198" y="640" font-size="47" letter-spacing="11" fill="#D9C5A2" font-family="DM Sans, sans-serif">AVERO LOOSE THEORY</text>
-  <text x="384" y="695" font-size="36" letter-spacing="11" fill="#C8B18A" font-family="DM Sans, sans-serif">[ ALT ]</text>
+  <text x="450" y="638" font-size="43" letter-spacing="8" text-anchor="middle" fill="#D9C5A2" font-family="DM Sans, sans-serif">AVERO LOOSE THEORY</text>
+  <text x="450" y="686" font-size="31" letter-spacing="8" text-anchor="middle" fill="#C8B18A" font-family="DM Sans, sans-serif">[ ALT ]</text>
 
-  <rect x="430" y="742" width="70" height="4" rx="2" fill="#CBB08A"/>
+  <rect x="415" y="736" width="70" height="4" rx="2" fill="#CBB08A"/>
 
   <g filter="url(#soft)">
     <circle cx="208" cy="202" r="73" fill="#FFFFFF" fill-opacity="0.06"/>
