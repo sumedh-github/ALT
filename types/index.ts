@@ -7,3 +7,12 @@ export interface CartItem {
   price: number;
   image: string;
 }
+
+export interface WishlistItem {
+  productId: string;
+  name: string;
+  slug: string;
+  price: number;
+  image: string;
+  category?: string;
+}

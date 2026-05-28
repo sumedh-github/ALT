@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 
 import { AddToCartForm } from "@/components/alt/add-to-cart-form";
 import { PageReveal } from "@/components/alt/page-reveal";
+import { WishlistButton } from "@/components/alt/wishlist-button";
 import { altCategories, altProducts } from "@/lib/mock-data";
 import { formatCurrency } from "@/lib/utils";
 
@@ -63,7 +64,10 @@ export default function ShopProductPage({ params }: ShopProductPageProps) {
         <p className="text-xs uppercase tracking-[0.2em] text-muted">
           {product.inventory} units currently available
         </p>
-        <AddToCartForm product={product} />
+        <div className="space-y-3">
+          <AddToCartForm product={product} />
+          <WishlistButton product={product} variant="full" className="w-full" />
+        </div>
       </PageReveal>
     </div>
   );

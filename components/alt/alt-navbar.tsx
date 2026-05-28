@@ -1,24 +1,37 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, ShoppingBag } from "lucide-react";
+import { Heart, Menu, ShoppingBag } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { CartDrawer } from "@/components/alt/cart-drawer";
 import { useCartSummary } from "@/hooks/use-cart-summary";
+import { useWishlistSummary } from "@/hooks/use-wishlist-summary";
 import { useUiStore } from "@/store/ui-store";
 
-const links = [
+const desktopLinks = [
   { href: "/", label: "Home" },
   { href: "/shop", label: "Shop" },
   { href: "/lookbook", label: "Lookbook" },
   { href: "/about", label: "About" }
 ];
 
+const mobileLinks = [
+  ...desktopLinks,
+  { href: "/wishlist", label: "Wishlist" }
+];
+
 export function AltNavbar() {
+  const [mounted, setMounted] = useState(false);
   const { quantity } = useCartSummary();
+  const { count } = useWishlistSummary();
   const setCartOpen = useUiStore((state) => state.setCartOpen);
   const mobileMenuOpen = useUiStore((state) => state.mobileMenuOpen);
   const setMobileMenuOpen = useUiStore((state) => state.setMobileMenuOpen);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-black/40 backdrop-blur-md">
@@ -41,7 +54,7 @@ export function AltNavbar() {
         </div>
 
         <nav className="hidden items-center gap-7 sm:flex">
-          {links.map((link) => (
+          {desktopLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -52,25 +65,40 @@ export function AltNavbar() {
           ))}
         </nav>
 
-        <button
-          type="button"
-          className="relative p-1 text-gold transition hover:text-taupe"
-          onClick={() => setCartOpen(true)}
-          aria-label="Open cart"
-        >
-          <ShoppingBag size={22} />
-          {quantity > 0 ? (
-            <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-gold px-1 text-center text-[10px] text-bg">
-              {quantity}
-            </span>
-          ) : null}
-        </button>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/wishlist"
+            className="relative p-1 text-gold transition hover:text-taupe"
+            aria-label="Open wishlist"
+          >
+            <Heart size={22} />
+            {mounted && count > 0 ? (
+              <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-gold px-1 text-center text-[10px] text-bg">
+                {count}
+              </span>
+            ) : null}
+          </Link>
+
+          <button
+            type="button"
+            className="relative p-1 text-gold transition hover:text-taupe"
+            onClick={() => setCartOpen(true)}
+            aria-label="Open cart"
+          >
+            <ShoppingBag size={22} />
+            {quantity > 0 ? (
+              <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-gold px-1 text-center text-[10px] text-bg">
+                {quantity}
+              </span>
+            ) : null}
+          </button>
+        </div>
       </div>
 
       {mobileMenuOpen ? (
         <div className="border-t border-white/10 bg-black/70 px-4 pb-4 pt-3 backdrop-blur-md sm:hidden">
           <div className="flex flex-col gap-3">
-            {links.map((link) => (
+            {mobileLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
