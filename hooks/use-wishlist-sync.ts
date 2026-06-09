@@ -1,11 +1,12 @@
 "use client";
 
-import type { SessionStatus } from "next-auth/react";
 import { useEffect, useRef } from "react";
 
 import { useWishlistStore } from "@/store/wishlist-store";
 
-export function useWishlistSync(status: SessionStatus) {
+type WishlistSyncStatus = "authenticated" | "loading" | "unauthenticated";
+
+export function useWishlistSync(status: WishlistSyncStatus) {
   const syncFromDatabase = useWishlistStore((state) => state.syncFromDatabase);
   const clearWishlist = useWishlistStore((state) => state.clearWishlist);
   const previousStatusRef = useRef(status);

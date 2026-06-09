@@ -1,5 +1,5 @@
 import { revalidatePath } from "next/cache";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 import { requireAccountUserRoute } from "@/lib/account-auth";
 import { prisma } from "@/lib/prisma";
@@ -13,7 +13,7 @@ const SESSION_COOKIE_NAMES = [
   "next-auth.csrf-token"
 ];
 
-export async function DELETE(_request: NextRequest) {
+export async function DELETE() {
   const accountCheck = await requireAccountUserRoute();
   if (!accountCheck.ok) {
     return accountCheck.response;
