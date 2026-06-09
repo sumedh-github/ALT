@@ -3,27 +3,20 @@ import { PrismaClient } from "@prisma/client";
 import { Pool } from "pg";
 
 const globalForPrisma = globalThis as unknown as {
-  prisma?: PrismaClient;
+  prisma: PrismaClient | undefined;
 };
-
-const databaseUrl = process.env.DATABASE_URL;
-if (!databaseUrl) {
-  throw new Error("DATABASE_URL is not defined.");
-}
-
-const adapter = new PrismaPg(
-  new Pool({
-    connectionString: databaseUrl
-  })
-);
 
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
-    adapter,
-    log: process.env.NODE_ENV === "development" ? ["query", "warn", "error"] : ["error"]
+    adapter: new PrismaPg(
+      new Pool({
+        connectionString:
+          process.env.DATABASE_URL ??
+          "postgresql://alt_user:alt_password@localhost:5432/alt_db?sslmode=disable"
+      })
+    ),
+    log: ["error"]
   });
 
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
-}
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
