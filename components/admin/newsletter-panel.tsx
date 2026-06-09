@@ -1,8 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
+
+import { useAdminRefreshTransition } from "@/hooks/use-admin-refresh-transition";
 
 interface NewsletterSubscriberRow {
   id: string;
@@ -15,15 +16,8 @@ interface NewsletterPanelProps {
 }
 
 export function NewsletterPanel({ subscribers }: NewsletterPanelProps) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const { isPending, refresh } = useAdminRefreshTransition();
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
-
-  function refreshData() {
-    startTransition(() => {
-      router.refresh();
-    });
-  }
 
   async function deleteSubscriber(id: string) {
     const confirmed = window.confirm("Delete this subscriber?");
@@ -37,7 +31,7 @@ export function NewsletterPanel({ subscribers }: NewsletterPanelProps) {
         throw new Error("Unable to delete subscriber");
       }
       toast.success("Subscriber deleted.");
-      refreshData();
+      refresh();
     } catch (error) {
       console.error(error);
       toast.error("Unable to delete subscriber.");

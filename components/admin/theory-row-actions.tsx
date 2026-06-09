@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
+
+import { useAdminRefreshTransition } from "@/hooks/use-admin-refresh-transition";
 
 interface TheoryRowActionsProps {
   theoryId: string;
@@ -13,14 +14,7 @@ interface TheoryRowActionsProps {
 export function TheoryRowActions({ theoryId, active }: TheoryRowActionsProps) {
   const [deleting, setDeleting] = useState(false);
   const [restoring, setRestoring] = useState(false);
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
-
-  function refreshData() {
-    startTransition(() => {
-      router.refresh();
-    });
-  }
+  const { isPending, refresh } = useAdminRefreshTransition();
 
   async function handleDelete() {
     const confirmed = window.confirm("Deactivate this theory?");
@@ -34,7 +28,7 @@ export function TheoryRowActions({ theoryId, active }: TheoryRowActionsProps) {
         throw new Error("Failed to delete theory");
       }
       toast.success("Theory deactivated.");
-      refreshData();
+      refresh();
     } catch (error) {
       console.error(error);
       toast.error("Unable to deactivate theory.");
@@ -55,7 +49,7 @@ export function TheoryRowActions({ theoryId, active }: TheoryRowActionsProps) {
         throw new Error("Failed to restore theory");
       }
       toast.success("Theory restored.");
-      refreshData();
+      refresh();
     } catch (error) {
       console.error(error);
       toast.error("Unable to restore theory.");

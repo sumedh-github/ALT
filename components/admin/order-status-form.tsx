@@ -1,9 +1,10 @@
 "use client";
 
 import type { OrderStatus } from "@prisma/client";
-import { useRouter } from "next/navigation";
-import { FormEvent, useState, useTransition } from "react";
+import { FormEvent, useState } from "react";
 import { toast } from "sonner";
+
+import { useAdminRefreshTransition } from "@/hooks/use-admin-refresh-transition";
 
 interface OrderStatusFormProps {
   orderId: string;
@@ -18,14 +19,7 @@ export function OrderStatusForm({ orderId, initialStatus }: OrderStatusFormProps
   const [internalNotes, setInternalNotes] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
-
-  function refreshData() {
-    startTransition(() => {
-      router.refresh();
-    });
-  }
+  const { isPending, refresh } = useAdminRefreshTransition();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -44,7 +38,7 @@ export function OrderStatusForm({ orderId, initialStatus }: OrderStatusFormProps
         return;
       }
       toast.success("Order updated.");
-      refreshData();
+      refresh();
     } catch (submitError) {
       console.error(submitError);
       setError("Unable to update order.");

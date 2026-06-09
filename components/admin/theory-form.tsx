@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState, useTransition } from "react";
+import { FormEvent, useState } from "react";
 import { toast } from "sonner";
 
 import { ImageUploader } from "@/components/admin/image-uploader";
+import { useAdminRefreshTransition } from "@/hooks/use-admin-refresh-transition";
 
 interface TheoryProductOption {
   id: string;
@@ -44,7 +45,7 @@ function toSlug(value: string) {
 
 export function TheoryForm({ mode, products, initialData }: TheoryFormProps) {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const { isPending, refresh } = useAdminRefreshTransition();
   const [number, setNumber] = useState(initialData?.number ?? "");
   const [name, setName] = useState(initialData?.name ?? "");
   const [slug, setSlug] = useState(initialData?.slug ?? "");
@@ -60,12 +61,6 @@ export function TheoryForm({ mode, products, initialData }: TheoryFormProps) {
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  function refreshData() {
-    startTransition(() => {
-      router.refresh();
-    });
-  }
 
   function onNameChange(value: string) {
     setName(value);
@@ -116,7 +111,7 @@ export function TheoryForm({ mode, products, initialData }: TheoryFormProps) {
         return;
       }
       toast.success(mode === "create" ? "Theory created." : "Theory updated.");
-      refreshData();
+      refresh();
       router.push("/admin/theories");
     } catch (submitError) {
       console.error(submitError);

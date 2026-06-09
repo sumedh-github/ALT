@@ -1,12 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { Copy, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { ImageUploader } from "@/components/admin/image-uploader";
+import { useAdminRefreshTransition } from "@/hooks/use-admin-refresh-transition";
 
 interface MediaFile {
   filename: string;
@@ -22,14 +22,7 @@ interface MediaPanelProps {
 export function MediaPanel({ files }: MediaPanelProps) {
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
   const [pendingDeleteFile, setPendingDeleteFile] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
-
-  function refreshData() {
-    startTransition(() => {
-      router.refresh();
-    });
-  }
+  const { isPending, refresh } = useAdminRefreshTransition();
 
   async function deleteFile(filename: string) {
     const confirmed = window.confirm("Delete this media file?");
@@ -45,7 +38,7 @@ export function MediaPanel({ files }: MediaPanelProps) {
         throw new Error("Unable to delete media");
       }
       toast.success("Media file deleted.");
-      refreshData();
+      refresh();
     } catch (error) {
       console.error(error);
       toast.error("Unable to delete media file.");
@@ -78,7 +71,7 @@ export function MediaPanel({ files }: MediaPanelProps) {
           onChange={(urls) => {
             setUploadedUrls(urls);
             toast.success("Media uploaded.");
-            refreshData();
+            refresh();
           }}
           maxImages={5}
         />

@@ -2,9 +2,10 @@
 
 import type { ProductStatus } from "@prisma/client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
+
+import { useAdminRefreshTransition } from "@/hooks/use-admin-refresh-transition";
 
 interface ProductRowActionsProps {
   productId: string;
@@ -14,14 +15,7 @@ interface ProductRowActionsProps {
 export function ProductRowActions({ productId, status }: ProductRowActionsProps) {
   const [deleting, setDeleting] = useState(false);
   const [restoring, setRestoring] = useState(false);
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
-
-  function refreshData() {
-    startTransition(() => {
-      router.refresh();
-    });
-  }
+  const { isPending, refresh } = useAdminRefreshTransition();
 
   async function handleDelete() {
     const shouldDelete = window.confirm(
@@ -39,7 +33,7 @@ export function ProductRowActions({ productId, status }: ProductRowActionsProps)
         throw new Error("Failed to delete product");
       }
       toast.success("Product deleted.");
-      refreshData();
+      refresh();
     } catch (error) {
       console.error(error);
       toast.error("Unable to delete product right now.");
@@ -60,7 +54,7 @@ export function ProductRowActions({ productId, status }: ProductRowActionsProps)
         throw new Error("Failed to restore product");
       }
       toast.success("Product restored.");
-      refreshData();
+      refresh();
     } catch (error) {
       console.error(error);
       toast.error("Unable to restore product right now.");

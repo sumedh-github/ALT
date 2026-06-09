@@ -1,12 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { FormEvent, useMemo, useState, useTransition } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import { GripVertical, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { ImageUploader } from "@/components/admin/image-uploader";
+import { useAdminRefreshTransition } from "@/hooks/use-admin-refresh-transition";
 
 interface LookbookPanelProduct {
   id: string;
@@ -54,14 +54,7 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
     "toggle" | "delete" | "restore" | null
   >(null);
   const [draggedId, setDraggedId] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
-
-  function refreshData() {
-    startTransition(() => {
-      router.refresh();
-    });
-  }
+  const { isPending, refresh } = useAdminRefreshTransition();
 
   const sortedItems = useMemo(
     () => [...items].sort((a, b) => a.order - b.order),
@@ -132,7 +125,7 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
     try {
       await persistOrder(reordered);
       toast.success("Lookbook order saved.");
-      refreshData();
+      refresh();
     } catch (persistError) {
       console.error(persistError);
       setError("Unable to save order.");
@@ -175,7 +168,7 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
       setShowForm(false);
       resetForm();
       toast.success(editingId ? "Lookbook entry updated." : "Lookbook entry created.");
-      refreshData();
+      refresh();
     } catch (submitError) {
       console.error(submitError);
       setError("Unable to save lookbook entry.");
@@ -198,7 +191,7 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
         throw new Error("Delete failed");
       }
       toast.success("Lookbook entry deactivated.");
-      refreshData();
+      refresh();
     } catch (deleteError) {
       console.error(deleteError);
       setError("Unable to delete lookbook entry.");
@@ -222,7 +215,7 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
         throw new Error("Restore failed");
       }
       toast.success("Lookbook entry restored.");
-      refreshData();
+      refresh();
     } catch (restoreError) {
       console.error(restoreError);
       setError("Unable to restore lookbook entry.");
@@ -396,7 +389,7 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
                       throw new Error("Toggle failed");
                     }
                     toast.success(`Lookbook entry ${entry.active ? "deactivated" : "activated"}.`);
-                    refreshData();
+                    refresh();
                   } catch (toggleError) {
                     console.error(toggleError);
                     toast.error("Unable to update lookbook entry status.");

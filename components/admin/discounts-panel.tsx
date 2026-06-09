@@ -1,8 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { FormEvent, useState, useTransition } from "react";
+import { FormEvent, useState } from "react";
 import { toast } from "sonner";
+
+import { useAdminRefreshTransition } from "@/hooks/use-admin-refresh-transition";
 
 interface DiscountRow {
   id: string;
@@ -26,8 +27,7 @@ function randomCode() {
 }
 
 export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const { isPending, refresh } = useAdminRefreshTransition();
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,12 +39,6 @@ export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
   const [active, setActive] = useState(true);
   const [pendingToggleId, setPendingToggleId] = useState<string | null>(null);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
-
-  function refreshData() {
-    startTransition(() => {
-      router.refresh();
-    });
-  }
 
   async function createDiscount(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -76,7 +70,7 @@ export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
       setExpiry("");
       setActive(true);
       toast.success("Discount created.");
-      refreshData();
+      refresh();
     } catch (submitError) {
       console.error(submitError);
       setError("Unable to create discount.");
@@ -98,7 +92,7 @@ export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
         throw new Error("Unable to toggle discount state");
       }
       toast.success(`Discount ${nextActive ? "activated" : "deactivated"}.`);
-      refreshData();
+      refresh();
     } catch (toggleError) {
       console.error(toggleError);
       toast.error("Unable to update discount.");
@@ -119,7 +113,7 @@ export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
         throw new Error("Unable to delete discount");
       }
       toast.success("Discount deleted.");
-      refreshData();
+      refresh();
     } catch (deleteError) {
       console.error(deleteError);
       toast.error("Unable to delete discount.");

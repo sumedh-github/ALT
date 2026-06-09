@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
+
+import { useAdminRefreshTransition } from "@/hooks/use-admin-refresh-transition";
 
 type StockFilter = "ALL" | "LOW_STOCK" | "OUT_OF_STOCK";
 
@@ -40,14 +41,7 @@ export function InventoryPanel({ products }: InventoryPanelProps) {
   const [editingVariantId, setEditingVariantId] = useState<string | null>(null);
   const [savingVariantId, setSavingVariantId] = useState<string | null>(null);
   const [editingValue, setEditingValue] = useState("");
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
-
-  function refreshData() {
-    startTransition(() => {
-      router.refresh();
-    });
-  }
+  const { isPending, refresh } = useAdminRefreshTransition();
 
   const filteredProducts = useMemo(() => {
     if (filter === "ALL") {
@@ -79,7 +73,7 @@ export function InventoryPanel({ products }: InventoryPanelProps) {
         throw new Error("Unable to update inventory");
       }
       toast.success("Inventory updated.");
-      refreshData();
+      refresh();
     } catch (error) {
       console.error(error);
       toast.error("Unable to update inventory.");

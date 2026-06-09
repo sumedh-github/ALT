@@ -1,10 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FormEvent, useMemo, useState, useTransition } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { ImageUploader } from "@/components/admin/image-uploader";
+import { useAdminRefreshTransition } from "@/hooks/use-admin-refresh-transition";
 
 type ProductStatusValue = "DRAFT" | "ACTIVE";
 
@@ -52,7 +53,7 @@ function toSlug(value: string) {
 
 export function ProductForm({ mode, categories, initialData }: ProductFormProps) {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const { isPending, refresh } = useAdminRefreshTransition();
   const [name, setName] = useState(initialData?.name ?? "");
   const [slug, setSlug] = useState(initialData?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(Boolean(initialData?.slug));
@@ -79,12 +80,6 @@ export function ProductForm({ mode, categories, initialData }: ProductFormProps)
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  function refreshData() {
-    startTransition(() => {
-      router.refresh();
-    });
-  }
 
   const availableSizes = useMemo(
     () => defaultSizes.filter((size) => !variants.some((variant) => variant.size === size)),
@@ -151,7 +146,7 @@ export function ProductForm({ mode, categories, initialData }: ProductFormProps)
         return;
       }
       toast.success(mode === "create" ? "Product created." : "Product updated.");
-      refreshData();
+      refresh();
       router.push("/admin/products");
     } catch (submitError) {
       console.error(submitError);
