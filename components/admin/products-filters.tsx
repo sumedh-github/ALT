@@ -79,6 +79,7 @@ export function ProductsFilters({
         <option value="ALL">All status</option>
         <option value="ACTIVE">ACTIVE</option>
         <option value="DRAFT">DRAFT</option>
+        <option value="DELETED">DELETED</option>
       </select>
       <button
         type="button"

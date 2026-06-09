@@ -5,6 +5,8 @@ import { AccountSignOutButton } from "@/app/account/account-sign-out-button";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+export const revalidate = 0;
+
 const statusClasses: Record<string, string> = {
   PENDING: "bg-yellow-500/15 text-yellow-200",
   PROCESSING: "bg-blue-500/15 text-blue-200",

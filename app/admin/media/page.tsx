@@ -4,6 +4,7 @@ import path from "node:path";
 import { MediaPanel } from "@/components/admin/media-panel";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function AdminMediaPage() {
   const uploadDirectory = path.join(process.cwd(), "public", "uploads");

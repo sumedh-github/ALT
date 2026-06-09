@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { requireAdminRoute } from "@/lib/admin-auth";
@@ -47,6 +48,16 @@ const productPayloadSchema = z.object({
     .refine((value) => value.length > 0, "At least one variant is required."),
   images: z.array(z.string().trim()).optional().default([])
 });
+
+function revalidateProductPaths(slug?: string) {
+  revalidatePath("/admin/products");
+  revalidatePath("/shop");
+  revalidatePath("/shop/[slug]", "page");
+  if (slug) {
+    revalidatePath(`/shop/${slug}`);
+  }
+  revalidatePath("/");
+}
 
 export async function GET() {
   const adminCheck = await requireAdminRoute();
@@ -135,6 +146,8 @@ export async function POST(request: NextRequest) {
         slug: true
       }
     });
+
+    revalidateProductPaths(created.slug);
 
     return NextResponse.json({ product: created }, { status: 201 });
   } catch (error) {

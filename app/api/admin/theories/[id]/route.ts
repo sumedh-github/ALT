@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { requireAdminRoute } from "@/lib/admin-auth";
@@ -23,20 +24,30 @@ const booleanFromInputSchema = z.preprocess((value) => {
 }, z.boolean());
 
 const theoryUpdateSchema = z.object({
-  number: z.string().trim().min(3),
-  name: z.string().trim().min(2),
-  slug: z.string().trim().min(2),
-  tagline: z.string().optional().or(z.literal("")).default(""),
-  description: z.string().min(500),
-  season: z.string().optional().or(z.literal("")).default(""),
+  number: z.string().trim().min(3).optional(),
+  name: z.string().trim().min(2).optional(),
+  slug: z.string().trim().min(2).optional(),
+  tagline: z.string().optional().nullable().or(z.literal("")),
+  description: z.string().min(500).optional(),
+  season: z.string().optional().nullable().or(z.literal("")),
   year: z
     .union([z.coerce.number().int(), z.null(), z.literal("")])
     .optional()
     .transform((value) => (value === "" || value === undefined ? null : value)),
-  image: z.string().optional().or(z.literal("")).default(""),
-  active: booleanFromInputSchema.optional().default(true),
-  productIds: z.array(z.string()).optional().default([])
+  image: z.string().optional().or(z.literal("")),
+  active: booleanFromInputSchema.optional(),
+  productIds: z.array(z.string()).optional()
 });
+
+function revalidateTheoryPaths(slug?: string) {
+  revalidatePath("/admin/theories");
+  revalidatePath("/theories");
+  revalidatePath("/theories/[slug]", "page");
+  if (slug) {
+    revalidatePath(`/theories/${slug}`);
+  }
+  revalidatePath("/");
+}
 
 interface TheoryRouteProps {
   params: {
@@ -51,6 +62,14 @@ export async function PATCH(request: NextRequest, { params }: TheoryRouteProps) 
   }
 
   try {
+    const existingTheory = await prisma.theory.findUnique({
+      where: { id: params.id },
+      select: { slug: true }
+    });
+    if (!existingTheory) {
+      return NextResponse.json({ error: "Theory not found." }, { status: 404 });
+    }
+
     const body = await request.json();
     const parsed = theoryUpdateSchema.safeParse(body);
     if (!parsed.success) {
@@ -62,12 +81,26 @@ export async function PATCH(request: NextRequest, { params }: TheoryRouteProps) 
     }
 
     const payload = parsed.data;
-    const imageValidation = localOrRemoteImageSchema.safeParse(payload.image);
-    if (!imageValidation.success) {
+    if (payload.image !== undefined && payload.image !== "") {
+      const imageValidation = localOrRemoteImageSchema.safeParse(payload.image);
+      if (!imageValidation.success) {
+        return NextResponse.json(
+          {
+            error: "Validation failed",
+            details: {
+              fieldErrors: { image: [imageValidation.error.issues[0]?.message ?? "Invalid image"] }
+            }
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (Object.keys(payload).length === 0) {
       return NextResponse.json(
         {
           error: "Validation failed",
-          details: { fieldErrors: { image: [imageValidation.error.issues[0]?.message ?? "Invalid image"] } }
+          details: { fieldErrors: { payload: ["No fields provided for update."] } }
         },
         { status: 400 }
       );
@@ -76,22 +109,26 @@ export async function PATCH(request: NextRequest, { params }: TheoryRouteProps) 
     const theory = await prisma.theory.update({
       where: { id: params.id },
       data: {
-        number: payload.number,
-        name: payload.name,
-        slug: payload.slug,
-        tagline: payload.tagline,
-        description: payload.description,
-        season: payload.season,
-        year: payload.year ?? null,
-        image: payload.image,
-        active: payload.active,
-        products: {
-          deleteMany: {},
-          create: payload.productIds.map((productId, index) => ({
-            productId,
-            position: index
-          }))
-        }
+        ...(payload.number !== undefined ? { number: payload.number } : {}),
+        ...(payload.name !== undefined ? { name: payload.name } : {}),
+        ...(payload.slug !== undefined ? { slug: payload.slug } : {}),
+        ...(payload.tagline !== undefined ? { tagline: payload.tagline ?? "" } : {}),
+        ...(payload.description !== undefined ? { description: payload.description } : {}),
+        ...(payload.season !== undefined ? { season: payload.season ?? "" } : {}),
+        ...(payload.year !== undefined ? { year: payload.year } : {}),
+        ...(payload.image !== undefined ? { image: payload.image } : {}),
+        ...(payload.active !== undefined ? { active: payload.active } : {}),
+        ...(payload.productIds !== undefined
+          ? {
+              products: {
+                deleteMany: {},
+                create: payload.productIds.map((productId, index) => ({
+                  productId,
+                  position: index
+                }))
+              }
+            }
+          : {})
       },
       select: {
         id: true,
@@ -99,6 +136,9 @@ export async function PATCH(request: NextRequest, { params }: TheoryRouteProps) 
         slug: true
       }
     });
+
+    revalidateTheoryPaths(theory.slug);
+    revalidateTheoryPaths(existingTheory.slug);
     return NextResponse.json({ theory });
   } catch (error) {
     console.error(error);
@@ -113,9 +153,20 @@ export async function DELETE(_: NextRequest, { params }: TheoryRouteProps) {
   }
 
   try {
-    await prisma.theory.delete({
-      where: { id: params.id }
+    const existingTheory = await prisma.theory.findUnique({
+      where: { id: params.id },
+      select: { slug: true }
     });
+    if (!existingTheory) {
+      return NextResponse.json({ error: "Theory not found." }, { status: 404 });
+    }
+
+    await prisma.theory.update({
+      where: { id: params.id },
+      data: { active: false }
+    });
+
+    revalidateTheoryPaths(existingTheory.slug);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error(error);

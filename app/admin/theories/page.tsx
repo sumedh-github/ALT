@@ -4,6 +4,9 @@ import Link from "next/link";
 import { TheoryRowActions } from "@/components/admin/theory-row-actions";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function AdminTheoriesPage() {
   const theories = await prisma.theory.findMany({
     include: {
@@ -76,11 +79,11 @@ export default async function AdminTheoriesPage() {
                           : "bg-[#6b7280]/20 text-[#d1d5db]"
                       }`}
                     >
-                      {theory.active ? "ACTIVE" : "DRAFT"}
+                      {theory.active ? "ACTIVE" : "INACTIVE"}
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <TheoryRowActions theoryId={theory.id} />
+                    <TheoryRowActions theoryId={theory.id} active={theory.active} />
                   </td>
                 </tr>
               ))}

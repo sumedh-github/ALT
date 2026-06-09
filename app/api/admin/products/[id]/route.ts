@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { requireAdminRoute } from "@/lib/admin-auth";
@@ -48,6 +49,22 @@ const productUpdateSchema = z.object({
   images: z.array(z.string().trim()).optional().default([])
 });
 
+const productStatusUpdateSchema = z
+  .object({
+    status: z.enum(["DRAFT", "ACTIVE", "DELETED"])
+  })
+  .strict();
+
+function revalidateProductPaths(slug?: string) {
+  revalidatePath("/admin/products");
+  revalidatePath("/shop");
+  revalidatePath("/shop/[slug]", "page");
+  if (slug) {
+    revalidatePath(`/shop/${slug}`);
+  }
+  revalidatePath("/");
+}
+
 interface ProductRouteProps {
   params: {
     id: string;
@@ -61,7 +78,35 @@ export async function PATCH(request: NextRequest, { params }: ProductRouteProps)
   }
 
   try {
+    const existingProduct = await prisma.product.findUnique({
+      where: { id: params.id },
+      select: { slug: true }
+    });
+    if (!existingProduct) {
+      return NextResponse.json({ error: "Product not found." }, { status: 404 });
+    }
+
     const body = await request.json();
+    const statusUpdate = productStatusUpdateSchema.safeParse(body);
+    if (statusUpdate.success) {
+      const updatedStatus = await prisma.product.update({
+        where: { id: params.id },
+        data: {
+          status: statusUpdate.data.status
+        },
+        select: {
+          id: true,
+          slug: true,
+          name: true,
+          status: true
+        }
+      });
+
+      revalidateProductPaths(updatedStatus.slug);
+      revalidateProductPaths(existingProduct.slug);
+      return NextResponse.json({ product: updatedStatus });
+    }
+
     const parsed = productUpdateSchema.safeParse(body);
     if (!parsed.success) {
       console.error("Validation error:", parsed.error.flatten());
@@ -115,6 +160,9 @@ export async function PATCH(request: NextRequest, { params }: ProductRouteProps)
       }
     });
 
+    revalidateProductPaths(updated.slug);
+    revalidateProductPaths(existingProduct.slug);
+
     return NextResponse.json({ product: updated });
   } catch (error) {
     console.error(error);
@@ -129,10 +177,23 @@ export async function DELETE(_: NextRequest, { params }: ProductRouteProps) {
   }
 
   try {
+    const current = await prisma.product.findUnique({
+      where: { id: params.id },
+      select: {
+        slug: true
+      }
+    });
+    if (!current) {
+      return NextResponse.json({ error: "Product not found." }, { status: 404 });
+    }
+
     await prisma.product.update({
       where: { id: params.id },
       data: { status: "DELETED" }
     });
+
+    revalidateProductPaths(current.slug);
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error(error);

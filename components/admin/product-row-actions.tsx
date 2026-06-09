@@ -1,15 +1,18 @@
 "use client";
 
+import type { ProductStatus } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface ProductRowActionsProps {
   productId: string;
+  status: ProductStatus;
 }
 
-export function ProductRowActions({ productId }: ProductRowActionsProps) {
+export function ProductRowActions({ productId, status }: ProductRowActionsProps) {
   const [deleting, setDeleting] = useState(false);
+  const [restoring, setRestoring] = useState(false);
   const router = useRouter();
 
   async function handleDelete() {
@@ -36,6 +39,26 @@ export function ProductRowActions({ productId }: ProductRowActionsProps) {
     }
   }
 
+  async function handleRestore() {
+    setRestoring(true);
+    try {
+      const response = await fetch(`/api/admin/products/${productId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "ACTIVE" })
+      });
+      if (!response.ok) {
+        throw new Error("Failed to restore product");
+      }
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      window.alert("Unable to restore product right now.");
+    } finally {
+      setRestoring(false);
+    }
+  }
+
   return (
     <div className="flex items-center gap-3 text-xs">
       <Link
@@ -44,14 +67,25 @@ export function ProductRowActions({ productId }: ProductRowActionsProps) {
       >
         Edit
       </Link>
-      <button
-        type="button"
-        onClick={handleDelete}
-        disabled={deleting}
-        className="text-[#fca5a5] transition hover:text-[#ef4444] disabled:opacity-60"
-      >
-        {deleting ? "Deleting..." : "Delete"}
-      </button>
+      {status === "DELETED" ? (
+        <button
+          type="button"
+          onClick={handleRestore}
+          disabled={restoring}
+          className="text-[#86efac] transition hover:text-[#22c55e] disabled:opacity-60"
+        >
+          {restoring ? "Restoring..." : "Restore"}
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={handleDelete}
+          disabled={deleting}
+          className="text-[#fca5a5] transition hover:text-[#ef4444] disabled:opacity-60"
+        >
+          {deleting ? "Deleting..." : "Delete"}
+        </button>
+      )}
     </div>
   );
 }

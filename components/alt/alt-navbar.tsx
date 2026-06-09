@@ -38,8 +38,9 @@ function AltNavbarContent() {
   const [theoriesOpen, setTheoriesOpen] = useState(false);
   const [mobileTheoriesOpen, setMobileTheoriesOpen] = useState(false);
   const [theories, setTheories] = useState<NavTheory[]>([]);
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const isLoggedIn = status === "authenticated";
+  const isAdmin = session?.user?.role === "ADMIN";
   const { quantity } = useCartSummary();
   const { count } = useWishlistSummary();
   const setCartOpen = useUiStore((state) => state.setCartOpen);
@@ -169,6 +170,14 @@ function AltNavbarContent() {
               >
                 MY THEORY
               </Link>
+              {isAdmin ? (
+                <Link
+                  href="/admin"
+                  className="hidden rounded-sm border border-[#6366f1]/60 px-2 py-1 font-body text-[10px] uppercase tracking-[0.18em] text-[#6366f1] sm:inline-block"
+                >
+                  ADMIN
+                </Link>
+              ) : null}
               <button
                 type="button"
                 className="hidden p-1 text-gold transition hover:text-taupe sm:inline-flex"
@@ -292,6 +301,15 @@ function AltNavbarContent() {
                   >
                     My Account
                   </Link>
+                  {isAdmin ? (
+                    <Link
+                      href="/admin"
+                      className="font-body text-[12px] uppercase tracking-[0.18em] text-[#6366f1]"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Admin
+                    </Link>
+                  ) : null}
                   <button
                     type="button"
                     className="text-left font-body text-[13px] font-medium uppercase tracking-widest text-red-300/80 transition-colors duration-200 hover:text-red-200"

@@ -169,7 +169,7 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
   }
 
   async function deleteEntry(id: string) {
-    const confirmed = window.confirm("Delete this lookbook entry?");
+    const confirmed = window.confirm("Deactivate this lookbook entry?");
     if (!confirmed) return;
     try {
       const response = await fetch(`/api/admin/lookbook/${id}`, {
@@ -182,6 +182,23 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
     } catch (deleteError) {
       console.error(deleteError);
       setError("Unable to delete lookbook entry.");
+    }
+  }
+
+  async function restoreEntry(id: string) {
+    try {
+      const response = await fetch(`/api/admin/lookbook/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ active: true })
+      });
+      if (!response.ok) {
+        throw new Error("Restore failed");
+      }
+      router.refresh();
+    } catch (restoreError) {
+      console.error(restoreError);
+      setError("Unable to restore lookbook entry.");
     }
   }
 
@@ -352,14 +369,24 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
               >
                 <Pencil size={15} />
               </button>
-              <button
-                type="button"
-                onClick={() => void deleteEntry(entry.id)}
-                className="text-[#fca5a5] hover:text-[#ef4444]"
-                aria-label="Delete lookbook entry"
-              >
-                <Trash2 size={15} />
-              </button>
+              {entry.active ? (
+                <button
+                  type="button"
+                  onClick={() => void deleteEntry(entry.id)}
+                  className="text-[#fca5a5] hover:text-[#ef4444]"
+                  aria-label="Delete lookbook entry"
+                >
+                  <Trash2 size={15} />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => void restoreEntry(entry.id)}
+                  className="text-[11px] font-medium uppercase tracking-wide text-[#86efac] transition hover:text-[#22c55e]"
+                >
+                  Restore
+                </button>
+              )}
             </div>
           </article>
         ))}

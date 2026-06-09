@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { TheoryForm } from "@/components/admin/theory-form";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 interface EditTheoryPageProps {
   params: {
     id: string;

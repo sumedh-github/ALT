@@ -5,6 +5,9 @@ import { OrderStatusBadge } from "@/components/admin/order-status-badge";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 interface OrdersPageProps {
   searchParams?: {
     q?: string;

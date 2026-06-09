@@ -3,6 +3,9 @@ import { redirect } from "next/navigation";
 import { NewsletterPanel } from "@/components/admin/newsletter-panel";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 async function exportSubscribersCsvAction() {
   "use server";
   redirect("/api/admin/newsletter?format=csv");

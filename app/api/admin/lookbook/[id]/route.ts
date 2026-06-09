@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { requireAdminRoute } from "@/lib/admin-auth";
@@ -40,6 +41,11 @@ const lookbookUpdateSchema = z.object({
     .or(z.literal(""))
     .transform((value) => (value === "" ? null : value))
 });
+
+function revalidateLookbookPaths() {
+  revalidatePath("/admin/lookbook");
+  revalidatePath("/lookbook");
+}
 
 interface LookbookRouteProps {
   params: {
@@ -94,6 +100,7 @@ export async function PATCH(request: NextRequest, { params }: LookbookRouteProps
         }
       }
     });
+    revalidateLookbookPaths();
     return NextResponse.json({ entry });
   } catch (error) {
     console.error(error);
@@ -111,9 +118,22 @@ export async function DELETE(_: NextRequest, { params }: LookbookRouteProps) {
   }
 
   try {
-    await prisma.lookbookEntry.delete({
-      where: { id: params.id }
+    const existingEntry = await prisma.lookbookEntry.findUnique({
+      where: { id: params.id },
+      select: { id: true }
     });
+    if (!existingEntry) {
+      return NextResponse.json(
+        { error: "Lookbook entry not found." },
+        { status: 404 }
+      );
+    }
+
+    await prisma.lookbookEntry.update({
+      where: { id: params.id },
+      data: { active: false }
+    });
+    revalidateLookbookPaths();
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error(error);

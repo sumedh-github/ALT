@@ -6,14 +6,16 @@ import { useState } from "react";
 
 interface TheoryRowActionsProps {
   theoryId: string;
+  active: boolean;
 }
 
-export function TheoryRowActions({ theoryId }: TheoryRowActionsProps) {
+export function TheoryRowActions({ theoryId, active }: TheoryRowActionsProps) {
   const [deleting, setDeleting] = useState(false);
+  const [restoring, setRestoring] = useState(false);
   const router = useRouter();
 
   async function handleDelete() {
-    const confirmed = window.confirm("Delete this theory?");
+    const confirmed = window.confirm("Deactivate this theory?");
     if (!confirmed) return;
     setDeleting(true);
     try {
@@ -32,6 +34,26 @@ export function TheoryRowActions({ theoryId }: TheoryRowActionsProps) {
     }
   }
 
+  async function handleRestore() {
+    setRestoring(true);
+    try {
+      const response = await fetch(`/api/admin/theories/${theoryId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ active: true })
+      });
+      if (!response.ok) {
+        throw new Error("Failed to restore theory");
+      }
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      window.alert("Unable to restore theory.");
+    } finally {
+      setRestoring(false);
+    }
+  }
+
   return (
     <div className="flex items-center gap-3 text-xs">
       <Link
@@ -40,14 +62,25 @@ export function TheoryRowActions({ theoryId }: TheoryRowActionsProps) {
       >
         Edit
       </Link>
-      <button
-        type="button"
-        onClick={handleDelete}
-        disabled={deleting}
-        className="text-[#fca5a5] transition hover:text-[#ef4444] disabled:opacity-60"
-      >
-        {deleting ? "Deleting..." : "Delete"}
-      </button>
+      {active ? (
+        <button
+          type="button"
+          onClick={handleDelete}
+          disabled={deleting}
+          className="text-[#fca5a5] transition hover:text-[#ef4444] disabled:opacity-60"
+        >
+          {deleting ? "Deleting..." : "Delete"}
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={handleRestore}
+          disabled={restoring}
+          className="text-[#86efac] transition hover:text-[#22c55e] disabled:opacity-60"
+        >
+          {restoring ? "Restoring..." : "Restore"}
+        </button>
+      )}
     </div>
   );
 }

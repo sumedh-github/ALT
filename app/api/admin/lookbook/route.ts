@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { requireAdminRoute } from "@/lib/admin-auth";
@@ -35,6 +36,11 @@ const lookbookPayloadSchema = z.object({
     .or(z.literal(""))
     .transform((value) => (value === "" ? null : value))
 });
+
+function revalidateLookbookPaths() {
+  revalidatePath("/admin/lookbook");
+  revalidatePath("/lookbook");
+}
 
 export async function GET() {
   const adminCheck = await requireAdminRoute();
@@ -113,6 +119,8 @@ export async function POST(request: NextRequest) {
         }
       }
     });
+
+    revalidateLookbookPaths();
 
     return NextResponse.json({ entry }, { status: 201 });
   } catch (error) {

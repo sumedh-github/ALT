@@ -17,6 +17,7 @@ interface ShopProductPageProps {
 }
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const legacySlugRedirects: Record<string, string> = {
   "obsidian-drape-hoodie": "obsidian-oversized-hoodie",
@@ -26,16 +27,7 @@ const legacySlugRedirects: Record<string, string> = {
 };
 
 export async function generateStaticParams() {
-  try {
-    const products = await prisma.product.findMany({
-      where: { status: "ACTIVE" },
-      select: { slug: true }
-    });
-    return products.map((product) => ({ slug: product.slug }));
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+  return [];
 }
 
 export default async function ShopProductPage({ params }: ShopProductPageProps) {

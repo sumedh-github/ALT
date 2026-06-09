@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { redirect } from "next/navigation";
 
 import { AdminShell } from "@/components/admin/admin-shell";
 import { auth } from "@/lib/auth";
@@ -14,7 +13,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   const session = await auth();
 
   if (!session?.user || session.user.role !== "ADMIN") {
-    redirect("/");
+    return <div className="min-h-screen bg-[#0f1117]">{children}</div>;
   }
 
   return (

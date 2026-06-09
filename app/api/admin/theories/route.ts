@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { requireAdminRoute } from "@/lib/admin-auth";
@@ -37,6 +38,16 @@ const theoryPayloadSchema = z.object({
   active: booleanFromInputSchema.optional().default(true),
   productIds: z.array(z.string()).optional().default([])
 });
+
+function revalidateTheoryPaths(slug?: string) {
+  revalidatePath("/admin/theories");
+  revalidatePath("/theories");
+  revalidatePath("/theories/[slug]", "page");
+  if (slug) {
+    revalidatePath(`/theories/${slug}`);
+  }
+  revalidatePath("/");
+}
 
 export async function GET() {
   const adminCheck = await requireAdminRoute();
@@ -116,6 +127,8 @@ export async function POST(request: NextRequest) {
         slug: true
       }
     });
+
+    revalidateTheoryPaths(theory.slug);
 
     return NextResponse.json({ theory }, { status: 201 });
   } catch (error) {

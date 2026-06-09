@@ -11,18 +11,10 @@ interface TheoryDetailPageProps {
 }
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function generateStaticParams() {
-  try {
-    const theories = await prisma.theory.findMany({
-      where: { active: true },
-      select: { slug: true }
-    });
-    return theories.map((theory) => ({ slug: theory.slug }));
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+  return [];
 }
 
 export default async function TheoryDetailPage({ params }: TheoryDetailPageProps) {

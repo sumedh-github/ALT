@@ -8,6 +8,9 @@ import { ProductStatusBadge } from "@/components/admin/product-status-badge";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 interface ProductsPageProps {
   searchParams?: {
     q?: string;
@@ -31,7 +34,9 @@ export default async function AdminProductsPage({ searchParams }: ProductsPagePr
   const rawStatus = searchParams?.status ?? "ALL";
   const page = Number(searchParams?.page ?? "1") || 1;
   const status =
-    rawStatus === "ACTIVE" || rawStatus === "DRAFT" ? (rawStatus as ProductStatus) : "ALL";
+    rawStatus === "ACTIVE" || rawStatus === "DRAFT" || rawStatus === "DELETED"
+      ? (rawStatus as ProductStatus)
+      : "ALL";
 
   const categories = await prisma.category.findMany({
     orderBy: { name: "asc" },
@@ -151,7 +156,7 @@ export default async function AdminProductsPage({ searchParams }: ProductsPagePr
                       <ProductStatusBadge status={product.status} />
                     </td>
                     <td className="px-4 py-3">
-                      <ProductRowActions productId={product.id} />
+                      <ProductRowActions productId={product.id} status={product.status} />
                     </td>
                   </tr>
                 );

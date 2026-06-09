@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -66,7 +66,18 @@ export function LoginClientPage({ callbackUrl }: LoginClientPageProps) {
       return;
     }
 
-    router.push(result?.url ?? callbackUrl);
+    if (result?.ok) {
+      const session = await getSession();
+      if (session?.user?.role === "ADMIN") {
+        router.push("/admin");
+      } else {
+        router.push(callbackUrl || "/");
+      }
+      router.refresh();
+      return;
+    }
+
+    router.push(callbackUrl || "/");
     router.refresh();
   };
 

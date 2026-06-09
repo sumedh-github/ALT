@@ -1,6 +1,9 @@
 import { InventoryPanel } from "@/components/admin/inventory-panel";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function AdminInventoryPage() {
   const products = await prisma.product.findMany({
     where: { status: { in: ["ACTIVE", "DRAFT"] } },
