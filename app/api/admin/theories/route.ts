@@ -9,10 +9,11 @@ const theoryPayloadSchema = z.object({
   name: z.string().min(2),
   slug: z.string().min(2),
   tagline: z.string().optional().default(""),
-  description: z.string().min(8),
+  description: z.string().min(500),
   season: z.string().optional().default(""),
   year: z.number().int().optional().nullable(),
   image: z.string().url(),
+  active: z.boolean().default(true),
   productIds: z.array(z.string()).default([])
 });
 
@@ -61,6 +62,7 @@ export async function POST(request: NextRequest) {
         season: payload.season,
         year: payload.year ?? null,
         image: payload.image,
+        active: payload.active,
         products: {
           create: payload.productIds.map((productId, index) => ({
             productId,

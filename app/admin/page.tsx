@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { DashboardCharts } from "@/components/admin/dashboard-charts";
 import { OrderStatusBadge } from "@/components/admin/order-status-badge";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/utils";
@@ -15,6 +16,8 @@ function formatDate(value: Date) {
 export default async function AdminDashboardPage() {
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const lastThirtyDaysStart = new Date(todayStart);
+  lastThirtyDaysStart.setDate(lastThirtyDaysStart.getDate() - 29);
 
   const [
     deliveredRevenue,
@@ -23,7 +26,9 @@ export default async function AdminDashboardPage() {
     totalCustomers,
     recentOrders,
     lowStockProducts,
-    topProductCounts
+    topProductCounts,
+    lastThirtyDayDeliveredOrders,
+    ordersByStatusRaw
   ] = await Promise.all([
     prisma.order.aggregate({
       where: { status: "DELIVERED" },
@@ -84,6 +89,22 @@ export default async function AdminDashboardPage() {
         _count: { id: "desc" }
       },
       take: 5
+    }),
+    prisma.order.findMany({
+      where: {
+        status: "DELIVERED",
+        createdAt: { gte: lastThirtyDaysStart }
+      },
+      select: {
+        createdAt: true,
+        total: true
+      }
+    }),
+    prisma.order.groupBy({
+      by: ["status"],
+      _count: {
+        id: true
+      }
     })
   ]);
 
@@ -117,6 +138,30 @@ export default async function AdminDashboardPage() {
     day: "2-digit",
     year: "numeric"
   }).format(now);
+
+  const revenueByDate = new Map<string, number>();
+  for (let index = 0; index < 30; index += 1) {
+    const date = new Date(lastThirtyDaysStart);
+    date.setDate(lastThirtyDaysStart.getDate() + index);
+    const key = date.toISOString().slice(0, 10);
+    revenueByDate.set(key, 0);
+  }
+  for (const order of lastThirtyDayDeliveredOrders) {
+    const key = order.createdAt.toISOString().slice(0, 10);
+    revenueByDate.set(key, (revenueByDate.get(key) ?? 0) + order.total / 100);
+  }
+
+  const revenueSeries = Array.from(revenueByDate.entries()).map(([date, revenue]) => ({
+    date: new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit" }).format(
+      new Date(date)
+    ),
+    revenue: Number(revenue.toFixed(2))
+  }));
+
+  const orderStatusSeries = ordersByStatusRaw.map((item) => ({
+    status: item.status,
+    count: item._count.id
+  }));
 
   return (
     <div className="space-y-8">
@@ -153,6 +198,11 @@ export default async function AdminDashboardPage() {
           <p className="mt-2 text-2xl font-semibold text-[#e2e4ed]">{totalCustomers}</p>
         </article>
       </section>
+
+      <DashboardCharts
+        revenueSeries={revenueSeries}
+        orderStatusSeries={orderStatusSeries}
+      />
 
       <section className="grid gap-6 xl:grid-cols-3">
         <article className="rounded-lg border border-[#2a2d3a] bg-[#1a1d27] xl:col-span-2">

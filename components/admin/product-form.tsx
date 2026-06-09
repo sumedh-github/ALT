@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
 
+import { ImageUploader } from "@/components/admin/image-uploader";
+
 type ProductStatusValue = "DRAFT" | "ACTIVE";
 
 interface ProductFormCategory {
@@ -99,19 +101,6 @@ export function ProductForm({ mode, categories, initialData }: ProductFormProps)
 
   function removeSize(size: string) {
     setVariants((prev) => prev.filter((item) => item.size !== size));
-  }
-
-  function updateImage(index: number, value: string) {
-    setImages((prev) => prev.map((item, idx) => (idx === index ? value : item)));
-  }
-
-  function addImageField() {
-    if (images.length >= 5) return;
-    setImages((prev) => [...prev, ""]);
-  }
-
-  function removeImageField(index: number) {
-    setImages((prev) => prev.filter((_, idx) => idx !== index));
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -323,36 +312,8 @@ export function ProductForm({ mode, categories, initialData }: ProductFormProps)
       </section>
 
       <section className="rounded-lg border border-[#2a2d3a] bg-[#1a1d27] p-5">
-        <div className="mb-3 flex items-center justify-between">
-          <p className="text-sm font-medium text-[#e2e4ed]">Images</p>
-          <button
-            type="button"
-            onClick={addImageField}
-            disabled={images.length >= 5}
-            className="text-xs text-[#a5b4fc] hover:text-[#c7d2fe] disabled:opacity-40"
-          >
-            Add image field
-          </button>
-        </div>
-        <div className="space-y-2">
-          {images.map((image, index) => (
-            <div key={`${index}-${image}`} className="flex gap-2">
-              <input
-                value={image}
-                onChange={(event) => updateImage(index, event.target.value)}
-                placeholder={`Image URL ${index + 1}${index === 0 ? " (primary)" : ""}`}
-                className="h-10 flex-1 rounded-md border border-[#2a2d3a] bg-[#0f1117] px-3 text-sm text-[#e2e4ed] focus:border-[#6366f1] focus:outline-none"
-              />
-              <button
-                type="button"
-                onClick={() => removeImageField(index)}
-                className="text-xs text-[#fca5a5] hover:text-[#ef4444]"
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-        </div>
+        <p className="mb-3 text-sm font-medium text-[#e2e4ed]">Images</p>
+        <ImageUploader value={images} onChange={setImages} maxImages={5} />
       </section>
 
       {error ? <p className="text-sm text-[#fca5a5]">{error}</p> : null}

@@ -9,8 +9,14 @@ import { useEffect, useState } from "react";
 import { CartDrawer } from "@/components/alt/cart-drawer";
 import { useCartSummary } from "@/hooks/use-cart-summary";
 import { useWishlistSummary } from "@/hooks/use-wishlist-summary";
-import { altTheories } from "@/lib/mock-data";
 import { useUiStore } from "@/store/ui-store";
+
+interface NavTheory {
+  id: string;
+  slug: string;
+  number: string;
+  name: string;
+}
 
 const desktopLinks = [
   { href: "/shop", label: "Shop" },
@@ -31,6 +37,7 @@ function AltNavbarContent() {
   const [mounted, setMounted] = useState(false);
   const [theoriesOpen, setTheoriesOpen] = useState(false);
   const [mobileTheoriesOpen, setMobileTheoriesOpen] = useState(false);
+  const [theories, setTheories] = useState<NavTheory[]>([]);
   const { status } = useSession();
   const isLoggedIn = status === "authenticated";
   const { quantity } = useCartSummary();
@@ -41,6 +48,30 @@ function AltNavbarContent() {
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    async function loadTheories() {
+      try {
+        const response = await fetch("/api/theories", { cache: "no-store" });
+        if (!response.ok) {
+          return;
+        }
+        const json = (await response.json()) as {
+          theories?: Array<{ id: string; slug: string; number: string; name: string }>;
+        };
+        if (active) {
+          setTheories(json.theories ?? []);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    void loadTheories();
+    return () => {
+      active = false;
+    };
   }, []);
 
   return (
@@ -93,7 +124,7 @@ function AltNavbarContent() {
                   className="absolute left-1/2 top-full z-40 mt-3 min-w-[300px] -translate-x-1/2 rounded-sm border border-white/10 bg-[#1a1e24] p-4 shadow-luxe"
                 >
                   <div className="space-y-2">
-                    {altTheories.map((theory) => (
+                    {theories.map((theory) => (
                       <Link
                         key={theory.id}
                         href={`/theories/${theory.slug}`}
@@ -212,7 +243,7 @@ function AltNavbarContent() {
 
             {mobileTheoriesOpen ? (
               <div id="mobile-theories-list" className="space-y-2 pl-3">
-                {altTheories.map((theory) => (
+                {theories.map((theory) => (
                   <Link
                     key={theory.id}
                     href={`/theories/${theory.slug}`}

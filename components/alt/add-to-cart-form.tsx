@@ -1,30 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+import {
+  getProductDisplayPrice,
+  getProductImage,
+  getProductSizeOptions,
+  isDBProduct
+} from "@/lib/storefront-products";
 
 import { AltButton } from "@/components/alt/alt-button";
-import type { AltProduct } from "@/lib/mock-data";
 import { useCartStore } from "@/store/cart-store";
 import { useUiStore } from "@/store/ui-store";
-
-const sizes = ["XS", "S", "M", "L", "XL"] as const;
+import type { StorefrontProduct } from "@/types/product";
 
 interface AddToCartFormProps {
-  product: AltProduct;
+  product: StorefrontProduct;
 }
 
 export function AddToCartForm({ product }: AddToCartFormProps) {
   const addItem = useCartStore((state) => state.addItem);
   const setCartOpen = useUiStore((state) => state.setCartOpen);
-  const [size, setSize] = useState<(typeof sizes)[number]>("M");
+  const sizeOptions = useMemo(() => getProductSizeOptions(product), [product]);
+  const [size, setSize] = useState(sizeOptions[0] ?? "M");
   const [quantity, setQuantity] = useState(1);
+  const maxQuantity = useMemo(() => {
+    if (!isDBProduct(product)) {
+      return 10;
+    }
+    const matchingVariant = product.variants.find((variant) => variant.size === size);
+    return Math.max(1, Math.min(10, matchingVariant?.inventory ?? 1));
+  }, [product, size]);
+
+  useEffect(() => {
+    if (!sizeOptions.includes(size)) {
+      setSize(sizeOptions[0] ?? "M");
+    }
+  }, [size, sizeOptions]);
 
   return (
     <div className="space-y-5 rounded-sm border border-surface bg-surface/30 p-5">
       <div>
         <p className="mb-2 text-xs uppercase tracking-[0.2em] text-muted">Size</p>
-        <div className="grid grid-cols-5 gap-2">
-          {sizes.map((item) => (
+        <div className="grid grid-cols-6 gap-2">
+          {sizeOptions.map((item) => (
             <button
               key={item}
               type="button"
@@ -53,7 +72,9 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
         <button
           type="button"
           className="rounded-sm border border-surface px-2 py-1 hover:border-gold"
-          onClick={() => setQuantity((previous) => Math.min(10, previous + 1))}
+          onClick={() =>
+            setQuantity((previous) => Math.min(maxQuantity, previous + 1))
+          }
         >
           +
         </button>
@@ -67,8 +88,8 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
             slug: product.slug,
             quantity,
             size,
-            price: product.price,
-            image: product.images[0]?.url ?? ""
+            price: getProductDisplayPrice(product),
+            image: getProductImage(product)
           });
           setCartOpen(true);
         }}

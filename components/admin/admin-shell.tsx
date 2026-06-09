@@ -9,9 +9,13 @@ import {
   LayoutDashboard,
   Box,
   Layers,
+  GalleryHorizontal,
+  Boxes,
   ShoppingCart,
   Users,
   TicketPercent,
+  Mail,
+  ImageIcon,
   LogOut,
   Menu,
   X
@@ -27,10 +31,14 @@ interface AdminShellProps {
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/products", label: "Products", icon: Box },
+  { href: "/admin/inventory", label: "Inventory", icon: Boxes },
   { href: "/admin/theories", label: "Theories", icon: Layers },
+  { href: "/admin/lookbook", label: "Lookbook", icon: GalleryHorizontal },
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
   { href: "/admin/customers", label: "Customers", icon: Users },
-  { href: "/admin/discounts", label: "Discounts", icon: TicketPercent }
+  { href: "/admin/discounts", label: "Discounts", icon: TicketPercent },
+  { href: "/admin/newsletter", label: "Newsletter", icon: Mail },
+  { href: "/admin/media", label: "Media", icon: ImageIcon }
 ];
 
 function isActive(pathname: string, href: string) {

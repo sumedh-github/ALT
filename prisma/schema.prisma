@@ -103,6 +103,7 @@ model Product {
   cartItems        CartItem[]
   wishlistItems    WishlistItem[]
   orderItems       OrderItem[]
+  lookbookEntries  LookbookEntry[]
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
 
@@ -146,11 +147,28 @@ model Theory {
   tagline     String?
   description String
   image       String
+  active      Boolean        @default(true)
   season      String?
   year        Int?
   products    TheoryProduct[]
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
+}
+
+model LookbookEntry {
+  id        String   @id @default(cuid())
+  title     String
+  subtitle  String?
+  imageUrl  String
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@index([productId])
 }
 
 model TheoryProduct {

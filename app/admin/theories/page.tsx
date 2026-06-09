@@ -38,6 +38,7 @@ export default async function AdminTheoriesPage() {
                 <th className="px-4 py-3">Number</th>
                 <th className="px-4 py-3">Season / Year</th>
                 <th className="px-4 py-3">Products</th>
+                <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Actions</th>
               </tr>
             </thead>
@@ -67,6 +68,17 @@ export default async function AdminTheoriesPage() {
                     {[theory.season, theory.year].filter(Boolean).join(" ") || "—"}
                   </td>
                   <td className="px-4 py-3 text-[#9ca3af]">{theory.products.length}</td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`inline-flex rounded-full px-2 py-1 text-[11px] font-medium uppercase tracking-wide ${
+                        theory.active
+                          ? "bg-[#22c55e]/20 text-[#86efac]"
+                          : "bg-[#6b7280]/20 text-[#d1d5db]"
+                      }`}
+                    >
+                      {theory.active ? "ACTIVE" : "DRAFT"}
+                    </span>
+                  </td>
                   <td className="px-4 py-3">
                     <TheoryRowActions theoryId={theory.id} />
                   </td>

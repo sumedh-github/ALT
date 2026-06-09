@@ -62,6 +62,7 @@ export default async function EditTheoryPage({ params }: EditTheoryPageProps) {
           season: theory.season ?? "",
           year: theory.year ?? null,
           image: theory.image,
+          active: theory.active,
           productIds: theory.products.map((item) => item.productId)
         }}
       />

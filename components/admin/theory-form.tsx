@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
+import { ImageUploader } from "@/components/admin/image-uploader";
+
 interface TheoryProductOption {
   id: string;
   name: string;
@@ -20,6 +22,7 @@ interface TheoryFormInitialData {
   season: string;
   year: number | null;
   image: string;
+  active: boolean;
   productIds: string[];
 }
 
@@ -48,7 +51,8 @@ export function TheoryForm({ mode, products, initialData }: TheoryFormProps) {
   const [description, setDescription] = useState(initialData?.description ?? "");
   const [season, setSeason] = useState(initialData?.season ?? "");
   const [year, setYear] = useState(initialData?.year ?? new Date().getFullYear());
-  const [image, setImage] = useState(initialData?.image ?? "");
+  const [image, setImage] = useState(initialData?.image ? [initialData.image] : []);
+  const [active, setActive] = useState(initialData?.active ?? true);
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>(
     initialData?.productIds ?? []
   );
@@ -87,7 +91,8 @@ export function TheoryForm({ mode, products, initialData }: TheoryFormProps) {
           description,
           season,
           year: Number(year),
-          image,
+          image: image[0],
+          active,
           productIds: selectedProductIds
         })
       });
@@ -165,24 +170,35 @@ export function TheoryForm({ mode, products, initialData }: TheoryFormProps) {
             className="h-10 w-full rounded-md border border-[#2a2d3a] bg-[#0f1117] px-3 text-[#e2e4ed] focus:border-[#6366f1] focus:outline-none"
           />
         </label>
-        <label className="space-y-2 text-sm md:col-span-2">
-          <span className="text-[#9ca3af]">Hero image URL</span>
-          <input
-            value={image}
-            onChange={(event) => setImage(event.target.value)}
-            required
-            className="h-10 w-full rounded-md border border-[#2a2d3a] bg-[#0f1117] px-3 text-[#e2e4ed] focus:border-[#6366f1] focus:outline-none"
-          />
+        <label className="space-y-2 text-sm">
+          <span className="text-[#9ca3af]">Status</span>
+          <button
+            type="button"
+            onClick={() => setActive((prev) => !prev)}
+            className={`h-10 w-full rounded-md border px-3 text-left text-xs ${
+              active
+                ? "border-[#22c55e] bg-[#22c55e]/15 text-[#86efac]"
+                : "border-[#2a2d3a] bg-[#0f1117] text-[#9ca3af]"
+            }`}
+          >
+            {active ? "ACTIVE" : "DRAFT"}
+          </button>
         </label>
         <label className="space-y-2 text-sm md:col-span-2">
-          <span className="text-[#9ca3af]">Description</span>
+          <span className="text-[#9ca3af]">Hero image</span>
+          <ImageUploader value={image} onChange={setImage} maxImages={1} />
+        </label>
+        <label className="space-y-2 text-sm md:col-span-2">
+          <span className="text-[#9ca3af]">Description (minimum 500 characters)</span>
           <textarea
             value={description}
             onChange={(event) => setDescription(event.target.value)}
-            rows={4}
+            rows={8}
             required
+            minLength={500}
             className="w-full rounded-md border border-[#2a2d3a] bg-[#0f1117] px-3 py-2 text-[#e2e4ed] focus:border-[#6366f1] focus:outline-none"
           />
+          <p className="text-xs text-[#6b7280]">{description.length}/500</p>
         </label>
       </section>
 

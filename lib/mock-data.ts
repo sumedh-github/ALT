@@ -1,3 +1,4 @@
+// LEGACY — storefront now uses DB. This file is kept for reference only. Do not delete it yet.
 export interface AltCategory {
   id: string;
   name: string;

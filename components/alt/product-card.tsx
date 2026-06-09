@@ -2,19 +2,22 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { WishlistButton } from "@/components/alt/wishlist-button";
-import { altCategories, type AltProduct } from "@/lib/mock-data";
+import {
+  getProductCategoryName,
+  getProductDisplayPrice
+} from "@/lib/storefront-products";
 import { formatCurrency } from "@/lib/utils";
+import type { StorefrontProduct } from "@/types/product";
 
 interface ProductCardProps {
-  product: AltProduct;
+  product: StorefrontProduct;
 }
 
 const fallbackImage = "https://picsum.photos/seed/alt-product-fallback/600/800";
 
 export function ProductCard({ product }: ProductCardProps) {
   const image = product.images[0];
-  const category =
-    altCategories.find((entry) => entry.id === product.categoryId)?.name ?? "ALT";
+  const category = getProductCategoryName(product);
 
   return (
     <article className="group rounded-sm border border-surface bg-surface/30 p-3 transition duration-300 hover:border-gold/50">
@@ -33,9 +36,11 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="space-y-2 px-1 pb-2 pt-4">
             <p className="text-xs uppercase tracking-[0.2em] text-muted">{category}</p>
             <h3 className="font-display text-2xl leading-none text-text">{product.name}</h3>
-            <p className="line-clamp-2 text-sm text-taupe">{product.shortDescription}</p>
+            <p className="line-clamp-2 text-sm text-taupe">
+              {product.shortDescription ?? product.description}
+            </p>
             <p className="text-sm uppercase tracking-[0.2em] text-gold">
-              {formatCurrency(product.price)}
+              {formatCurrency(getProductDisplayPrice(product))}
             </p>
           </div>
         </Link>
