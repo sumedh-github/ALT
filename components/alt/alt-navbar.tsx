@@ -1,28 +1,27 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown, Heart, Menu, ShoppingBag } from "lucide-react";
 import Link from "next/link";
-import { Heart, Menu, ShoppingBag } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { CartDrawer } from "@/components/alt/cart-drawer";
 import { useCartSummary } from "@/hooks/use-cart-summary";
 import { useWishlistSummary } from "@/hooks/use-wishlist-summary";
+import { altTheories } from "@/lib/mock-data";
 import { useUiStore } from "@/store/ui-store";
 
 const desktopLinks = [
-  { href: "/", label: "Home" },
   { href: "/shop", label: "Shop" },
+  { href: "/theories", label: "Theories" },
   { href: "/lookbook", label: "Lookbook" },
   { href: "/about", label: "About" }
 ];
 
-const mobileLinks = [
-  ...desktopLinks,
-  { href: "/wishlist", label: "Wishlist" }
-];
-
 export function AltNavbar() {
   const [mounted, setMounted] = useState(false);
+  const [theoriesOpen, setTheoriesOpen] = useState(false);
+  const [mobileTheoriesOpen, setMobileTheoriesOpen] = useState(false);
   const { quantity } = useCartSummary();
   const { count } = useWishlistSummary();
   const setCartOpen = useUiStore((state) => state.setCartOpen);
@@ -54,15 +53,69 @@ export function AltNavbar() {
         </div>
 
         <nav className="hidden items-center gap-7 sm:flex">
-          {desktopLinks.map((link) => (
+          <Link
+            href="/shop"
+            className="font-body text-[13px] font-medium uppercase tracking-widest text-text transition-colors duration-200 hover:text-gold"
+          >
+            Shop
+          </Link>
+
+          <div
+            className="relative"
+            onMouseEnter={() => setTheoriesOpen(true)}
+            onMouseLeave={() => setTheoriesOpen(false)}
+          >
             <Link
-              key={link.href}
-              href={link.href}
+              href="/theories"
               className="font-body text-[13px] font-medium uppercase tracking-widest text-text transition-colors duration-200 hover:text-gold"
             >
-              {link.label}
+              Theories
             </Link>
-          ))}
+
+            <AnimatePresence>
+              {theoriesOpen ? (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="absolute left-1/2 top-full z-40 mt-3 min-w-[300px] -translate-x-1/2 rounded-sm border border-white/10 bg-[#1a1e24] p-4 shadow-luxe"
+                >
+                  <div className="space-y-2">
+                    {altTheories.map((theory) => (
+                      <Link
+                        key={theory.id}
+                        href={`/theories/${theory.slug}`}
+                        className="block font-display text-2xl italic leading-none text-text transition-colors duration-200 hover:text-gold"
+                      >
+                        {theory.number.replace("THEORY", "Theory")} — {theory.name}
+                      </Link>
+                    ))}
+                  </div>
+                  <div className="mt-4 border-t border-white/10 pt-3">
+                    <Link
+                      href="/theories"
+                      className="font-body text-[11px] uppercase tracking-[0.2em] text-muted transition-colors duration-200 hover:text-gold"
+                    >
+                      View All Theories
+                    </Link>
+                  </div>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+          </div>
+
+          {desktopLinks
+            .filter((link) => link.label !== "Shop" && link.label !== "Theories")
+            .map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="font-body text-[13px] font-medium uppercase tracking-widest text-text transition-colors duration-200 hover:text-gold"
+              >
+                {link.label}
+              </Link>
+            ))}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -98,16 +151,68 @@ export function AltNavbar() {
       {mobileMenuOpen ? (
         <div className="border-t border-white/10 bg-black/70 px-4 pb-4 pt-3 backdrop-blur-md sm:hidden">
           <div className="flex flex-col gap-3">
-            {mobileLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="font-body text-[13px] font-medium uppercase tracking-widest text-text transition-colors duration-200 hover:text-gold"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
+            <Link
+              href="/shop"
+              className="font-body text-[13px] font-medium uppercase tracking-widest text-text transition-colors duration-200 hover:text-gold"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Shop
+            </Link>
+
+            <button
+              type="button"
+              onClick={() => setMobileTheoriesOpen((prev) => !prev)}
+              className="flex items-center justify-between font-body text-[13px] font-medium uppercase tracking-widest text-text transition-colors duration-200 hover:text-gold"
+              aria-expanded={mobileTheoriesOpen}
+              aria-controls="mobile-theories-list"
+            >
+              Theories
+              <ChevronDown
+                size={16}
+                className={`transition-transform ${mobileTheoriesOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {mobileTheoriesOpen ? (
+              <div id="mobile-theories-list" className="space-y-2 pl-3">
+                {altTheories.map((theory) => (
+                  <Link
+                    key={theory.id}
+                    href={`/theories/${theory.slug}`}
+                    className="block font-display text-2xl italic leading-none text-taupe transition-colors duration-200 hover:text-gold"
+                    onClick={() => {
+                      setMobileTheoriesOpen(false);
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    {theory.number.replace("THEORY", "Theory")} — {theory.name}
+                  </Link>
+                ))}
+                <Link
+                  href="/theories"
+                  className="block pt-1 font-body text-[11px] uppercase tracking-[0.2em] text-muted transition-colors duration-200 hover:text-gold"
+                  onClick={() => {
+                    setMobileTheoriesOpen(false);
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  View All Theories
+                </Link>
+              </div>
+            ) : null}
+
+            {desktopLinks
+              .filter((link) => link.label !== "Shop" && link.label !== "Theories")
+              .map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="font-body text-[13px] font-medium uppercase tracking-widest text-text transition-colors duration-200 hover:text-gold"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
           </div>
         </div>
       ) : null}

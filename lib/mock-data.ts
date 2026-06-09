@@ -24,6 +24,19 @@ export interface AltProduct {
   images: AltProductImage[];
 }
 
+export interface Theory {
+  id: string;
+  slug: string;
+  number: string;
+  name: string;
+  tagline: string;
+  description: string;
+  image: string;
+  productIds: string[];
+  season: string;
+  year: number;
+}
+
 export interface AltOrderItem {
   productId: string;
   size: "XS" | "S" | "M" | "L" | "XL";
@@ -594,6 +607,48 @@ export const altProducts: AltProduct[] = [
         alt: "Blackline oversized,shirt with minimal style"
       }
     ]
+  }
+];
+
+export const altTheories: Theory[] = [
+  {
+    id: "theory-001",
+    slug: "the-void-drop",
+    number: "THEORY 001",
+    name: "The Void Drop",
+    tagline: "Silence shaped in black-on-black volume.",
+    description:
+      "A study in negative space and muted structure. The Void Drop strips noise from the silhouette and lets proportion speak first.",
+    image: "https://picsum.photos/seed/theory-001/1200/800",
+    productIds: ["prod-01", "prod-10", "prod-20"],
+    season: "Fall",
+    year: 2026
+  },
+  {
+    id: "theory-002",
+    slug: "concrete-season",
+    number: "THEORY 002",
+    name: "Concrete Season",
+    tagline: "Urban grain, raw texture, cold grey rhythm.",
+    description:
+      "Concrete Season borrows from wet streets, steel facades, and unfinished walls. Oversized forms are cut to feel architectural and grounded.",
+    image: "https://picsum.photos/seed/theory-002/1200/800",
+    productIds: ["prod-02", "prod-11", "prod-24"],
+    season: "Winter",
+    year: 2026
+  },
+  {
+    id: "theory-003",
+    slug: "warm-static",
+    number: "THEORY 003",
+    name: "Warm Static",
+    tagline: "Layered comfort charged with quiet heat.",
+    description:
+      "Warm Static introduces softer tones and heavier stacking. It is built for oversized comfort without losing the ALT edge.",
+    image: "https://picsum.photos/seed/theory-003/1200/800",
+    productIds: ["prod-05", "prod-15", "prod-23"],
+    season: "Pre-Spring",
+    year: 2027
   }
 ];
 
