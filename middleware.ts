@@ -12,13 +12,7 @@ export default auth((req) => {
     pathname.startsWith("/order");
 
   if (isAdminRoute) {
-    if (!isAuthenticated) {
-      const loginUrl = new URL("/login", req.nextUrl);
-      loginUrl.searchParams.set("callbackUrl", `${pathname}${req.nextUrl.search}`);
-      return NextResponse.redirect(loginUrl);
-    }
-
-    if (req.auth?.user.role !== "ADMIN") {
+    if (!isAuthenticated || req.auth?.user.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/", req.nextUrl));
     }
 
