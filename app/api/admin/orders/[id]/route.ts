@@ -37,11 +37,15 @@ export async function PATCH(request: NextRequest, { params }: OrderRouteProps) {
     const order = await prisma.order.update({
       where: { id: params.id },
       data: {
-        status: payload.status
+        status: payload.status,
+        trackingNumber: payload.trackingNumber?.trim() || null,
+        internalNotes: payload.internalNotes?.trim() || null
       },
       select: {
         id: true,
-        status: true
+        status: true,
+        trackingNumber: true,
+        internalNotes: true
       }
     });
 

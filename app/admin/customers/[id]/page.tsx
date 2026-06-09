@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { OrderStatusBadge } from "@/components/admin/order-status-badge";
-import { prisma } from "@/lib/prisma";
+import { formatAddressName } from "@/lib/account-utils";
+import { getAdminCustomerDetail } from "@/lib/db/account";
 import { formatCurrency } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -15,23 +16,7 @@ interface CustomerDetailPageProps {
 }
 
 export default async function AdminCustomerDetailPage({ params }: CustomerDetailPageProps) {
-  const customer = await prisma.user.findUnique({
-    where: { id: params.id },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      createdAt: true,
-      orders: {
-        include: {
-          items: {
-            select: { id: true }
-          }
-        },
-        orderBy: { createdAt: "desc" }
-      }
-    }
-  });
+  const customer = await getAdminCustomerDetail(params.id);
 
   if (!customer) {
     notFound();
@@ -45,9 +30,51 @@ export default async function AdminCustomerDetailPage({ params }: CustomerDetail
         <h1 className="text-2xl font-semibold text-[#e2e4ed]">{customer.name ?? "Unnamed"}</h1>
         <p className="text-sm text-[#9ca3af]">{customer.email}</p>
         <p className="mt-2 text-xs uppercase tracking-wide text-[#6b7280]">
+          Member since{" "}
+          {new Intl.DateTimeFormat("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric"
+          }).format(customer.createdAt)}{" "}
+          · {customer.wishlistItems.length} wishlist items
+        </p>
+        <p className="mt-1 text-xs uppercase tracking-wide text-[#6b7280]">
           {customer.orders.length} orders · {formatCurrency(totalSpend / 100)} lifetime spend
         </p>
       </header>
+
+      <section className="rounded-lg border border-[#2a2d3a] bg-[#1a1d27] p-5">
+        <h2 className="text-sm font-semibold text-[#e2e4ed]">Addresses</h2>
+        {customer.addresses.length === 0 ? (
+          <p className="mt-3 text-sm text-[#6b7280]">No saved addresses.</p>
+        ) : (
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
+            {customer.addresses.map((address) => (
+              <article
+                key={address.id}
+                className="rounded-md border border-[#2a2d3a] bg-[#0f1117] p-3 text-sm text-[#9ca3af]"
+              >
+                <div className="mb-2 flex items-center justify-between">
+                  <p className="font-medium text-[#e2e4ed]">
+                    {formatAddressName(address.firstName, address.lastName)}
+                  </p>
+                  {address.isDefault ? (
+                    <span className="rounded-full bg-[#6366f1]/20 px-2 py-1 text-[10px] uppercase tracking-wide text-[#c7d2fe]">
+                      Default
+                    </span>
+                  ) : null}
+                </div>
+                <p>{address.line1}</p>
+                {address.line2 ? <p>{address.line2}</p> : null}
+                <p>
+                  {address.city}, {address.state} {address.postalCode}
+                </p>
+                <p>{address.country}</p>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
 
       <section className="overflow-hidden rounded-lg border border-[#2a2d3a] bg-[#1a1d27]">
         <div className="border-b border-[#2a2d3a] px-4 py-3">

@@ -145,7 +145,12 @@ export default async function AdminOrderDetailPage({ params }: OrderDetailPagePr
         </div>
 
         <div className="space-y-6">
-          <OrderStatusForm orderId={order.id} initialStatus={order.status} />
+          <OrderStatusForm
+            orderId={order.id}
+            initialStatus={order.status}
+            initialTrackingNumber={order.trackingNumber}
+            initialInternalNotes={order.internalNotes}
+          />
 
           <article className="rounded-lg border border-[#2a2d3a] bg-[#1a1d27] p-5">
             <h2 className="text-sm font-semibold text-[#e2e4ed]">Order Totals</h2>

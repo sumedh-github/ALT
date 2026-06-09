@@ -9,14 +9,21 @@ import { useAdminRefreshTransition } from "@/hooks/use-admin-refresh-transition"
 interface OrderStatusFormProps {
   orderId: string;
   initialStatus: OrderStatus;
+  initialTrackingNumber: string | null;
+  initialInternalNotes: string | null;
 }
 
 const statusSequence: OrderStatus[] = ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED"];
 
-export function OrderStatusForm({ orderId, initialStatus }: OrderStatusFormProps) {
+export function OrderStatusForm({
+  orderId,
+  initialStatus,
+  initialTrackingNumber,
+  initialInternalNotes
+}: OrderStatusFormProps) {
   const [status, setStatus] = useState<OrderStatus>(initialStatus);
-  const [trackingNumber, setTrackingNumber] = useState("");
-  const [internalNotes, setInternalNotes] = useState("");
+  const [trackingNumber, setTrackingNumber] = useState(initialTrackingNumber ?? "");
+  const [internalNotes, setInternalNotes] = useState(initialInternalNotes ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { isPending, refresh } = useAdminRefreshTransition();

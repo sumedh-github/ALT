@@ -264,6 +264,8 @@ model Order {
   id             String      @id @default(cuid())
   userId         String
   status         OrderStatus @default(PENDING)
+  trackingNumber String?
+  internalNotes  String?
   subtotal       Int
   discountTotal  Int         @default(0)
   shippingTotal  Int         @default(0)

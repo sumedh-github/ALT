@@ -4,8 +4,8 @@ import { Heart } from "lucide-react";
 import type { MouseEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
 
-import { getProductCategoryName, getProductDisplayPrice } from "@/lib/storefront-products";
 import { cn } from "@/lib/utils";
+import { toWishlistItem } from "@/lib/wishlist";
 import { useWishlistStore } from "@/store/wishlist-store";
 import type { StorefrontProduct } from "@/types/product";
 
@@ -30,9 +30,7 @@ export function WishlistButton({
     setMounted(true);
   }, []);
 
-  const category = useMemo(() => {
-    return getProductCategoryName(product);
-  }, [product]);
+  const wishlistItem = useMemo(() => toWishlistItem(product), [product]);
 
   const label = mounted && isWishlisted
     ? `Remove ${product.name} from wishlist`
@@ -45,14 +43,7 @@ export function WishlistButton({
       return;
     }
 
-    toggleItem({
-      productId: product.id,
-      name: product.name,
-      slug: product.slug,
-      price: getProductDisplayPrice(product),
-      image: product.images[0]?.url ?? "",
-      category
-    });
+    void toggleItem(wishlistItem);
   };
 
   if (variant === "full") {

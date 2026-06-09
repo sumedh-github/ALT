@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 import { CartDrawer } from "@/components/alt/cart-drawer";
 import { useCartSummary } from "@/hooks/use-cart-summary";
 import { useWishlistSummary } from "@/hooks/use-wishlist-summary";
+import { useWishlistSync } from "@/hooks/use-wishlist-sync";
+import { useWishlistStore } from "@/store/wishlist-store";
 import { useUiStore } from "@/store/ui-store";
 
 interface NavTheory {
@@ -41,8 +43,10 @@ function AltNavbarContent() {
   const { data: session, status } = useSession();
   const isLoggedIn = status === "authenticated";
   const isAdmin = session?.user?.role === "ADMIN";
+  const displayName = session?.user?.name?.trim() || "ALT";
   const { quantity } = useCartSummary();
   const { count } = useWishlistSummary();
+  const clearWishlist = useWishlistStore((state) => state.clearWishlist);
   const setCartOpen = useUiStore((state) => state.setCartOpen);
   const mobileMenuOpen = useUiStore((state) => state.mobileMenuOpen);
   const setMobileMenuOpen = useUiStore((state) => state.setMobileMenuOpen);
@@ -50,6 +54,8 @@ function AltNavbarContent() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useWishlistSync(status);
 
   useEffect(() => {
     let active = true;
@@ -166,9 +172,9 @@ function AltNavbarContent() {
             <>
               <Link
                 href="/account"
-                className="hidden font-body text-[11px] uppercase tracking-widest text-muted transition-colors duration-200 hover:text-gold sm:inline-block"
+                className="hidden font-body text-[11px] tracking-widest text-muted transition-colors duration-200 hover:text-gold sm:inline-block"
               >
-                MY THEORY
+                HI, {displayName}
               </Link>
               {isAdmin ? (
                 <Link
@@ -181,7 +187,10 @@ function AltNavbarContent() {
               <button
                 type="button"
                 className="hidden p-1 text-gold transition hover:text-taupe sm:inline-flex"
-                onClick={() => signOut({ callbackUrl: "/" })}
+                onClick={() => {
+                  clearWishlist();
+                  void signOut({ callbackUrl: "/" });
+                }}
                 aria-label="Sign out"
               >
                 <LogOut size={18} />
@@ -315,6 +324,7 @@ function AltNavbarContent() {
                     className="text-left font-body text-[13px] font-medium uppercase tracking-widest text-red-300/80 transition-colors duration-200 hover:text-red-200"
                     onClick={() => {
                       setMobileMenuOpen(false);
+                      clearWishlist();
                       void signOut({ callbackUrl: "/" });
                     }}
                   >

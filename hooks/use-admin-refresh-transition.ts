@@ -1,17 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useAdminRefresh } from "@/hooks/use-admin-refresh";
 
 export function useAdminRefreshTransition() {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-
-  function refresh() {
-    startTransition(() => {
-      router.refresh();
-    });
-  }
-
+  const { isPending, refresh } = useAdminRefresh();
   return { isPending, refresh };
 }

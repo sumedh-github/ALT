@@ -14,7 +14,7 @@ export function WishlistPageContent() {
   const [mounted, setMounted] = useState(false);
   const items = useWishlistStore((state) => state.items);
   const removeItem = useWishlistStore((state) => state.removeItem);
-  const clearWishlist = useWishlistStore((state) => state.clearWishlist);
+  const clearAllItems = useWishlistStore((state) => state.clearAllItems);
 
   useEffect(() => {
     setMounted(true);
@@ -50,7 +50,9 @@ export function WishlistPageContent() {
         </p>
         <button
           type="button"
-          onClick={() => clearWishlist()}
+          onClick={() => {
+            void clearAllItems();
+          }}
           className="text-xs uppercase tracking-[0.2em] text-taupe transition hover:text-gold"
           aria-label="Clear all wishlist items"
         >
@@ -105,7 +107,9 @@ export function WishlistPageContent() {
                   </Link>
                   <button
                     type="button"
-                    onClick={() => removeItem(item.productId)}
+                    onClick={() => {
+                      void removeItem(item.productId);
+                    }}
                     className="text-xs uppercase tracking-[0.2em] text-taupe transition hover:text-gold"
                     aria-label={`Remove ${item.name} from wishlist`}
                   >

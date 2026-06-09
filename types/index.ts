@@ -16,3 +16,5 @@ export interface WishlistItem {
   image: string;
   category?: string;
 }
+
+export * from "./account";
