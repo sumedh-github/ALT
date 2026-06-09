@@ -4,6 +4,7 @@ import type { ProductStatus } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface ProductRowActionsProps {
   productId: string;
@@ -30,10 +31,11 @@ export function ProductRowActions({ productId, status }: ProductRowActionsProps)
       if (!response.ok) {
         throw new Error("Failed to delete product");
       }
+      toast.success("Product deleted.");
       router.refresh();
     } catch (error) {
       console.error(error);
-      window.alert("Unable to delete product right now.");
+      toast.error("Unable to delete product right now.");
     } finally {
       setDeleting(false);
     }
@@ -50,10 +52,11 @@ export function ProductRowActions({ productId, status }: ProductRowActionsProps)
       if (!response.ok) {
         throw new Error("Failed to restore product");
       }
+      toast.success("Product restored.");
       router.refresh();
     } catch (error) {
       console.error(error);
-      window.alert("Unable to restore product right now.");
+      toast.error("Unable to restore product right now.");
     } finally {
       setRestoring(false);
     }

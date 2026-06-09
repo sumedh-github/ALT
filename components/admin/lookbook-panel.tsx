@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
 import { GripVertical, Pencil, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { ImageUploader } from "@/components/admin/image-uploader";
 
@@ -48,6 +49,10 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
   const [order, setOrder] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [pendingEntryId, setPendingEntryId] = useState<string | null>(null);
+  const [pendingEntryAction, setPendingEntryAction] = useState<
+    "toggle" | "delete" | "restore" | null
+  >(null);
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const router = useRouter();
 
@@ -119,10 +124,12 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
     setDraggedId(null);
     try {
       await persistOrder(reordered);
+      toast.success("Lookbook order saved.");
       router.refresh();
     } catch (persistError) {
       console.error(persistError);
       setError("Unable to save order.");
+      toast.error("Unable to save lookbook order.");
     }
   }
 
@@ -155,14 +162,17 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
       const json = await response.json();
       if (!response.ok) {
         setError(json.error ?? "Unable to save lookbook entry.");
+        toast.error(json.error ?? "Unable to save lookbook entry.");
         return;
       }
       setShowForm(false);
       resetForm();
+      toast.success(editingId ? "Lookbook entry updated." : "Lookbook entry created.");
       router.refresh();
     } catch (submitError) {
       console.error(submitError);
       setError("Unable to save lookbook entry.");
+      toast.error("Unable to save lookbook entry.");
     } finally {
       setSaving(false);
     }
@@ -171,6 +181,8 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
   async function deleteEntry(id: string) {
     const confirmed = window.confirm("Deactivate this lookbook entry?");
     if (!confirmed) return;
+    setPendingEntryId(id);
+    setPendingEntryAction("delete");
     try {
       const response = await fetch(`/api/admin/lookbook/${id}`, {
         method: "DELETE"
@@ -178,14 +190,21 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
       if (!response.ok) {
         throw new Error("Delete failed");
       }
+      toast.success("Lookbook entry deactivated.");
       router.refresh();
     } catch (deleteError) {
       console.error(deleteError);
       setError("Unable to delete lookbook entry.");
+      toast.error("Unable to deactivate lookbook entry.");
+    } finally {
+      setPendingEntryId(null);
+      setPendingEntryAction(null);
     }
   }
 
   async function restoreEntry(id: string) {
+    setPendingEntryId(id);
+    setPendingEntryAction("restore");
     try {
       const response = await fetch(`/api/admin/lookbook/${id}`, {
         method: "PATCH",
@@ -195,10 +214,15 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
       if (!response.ok) {
         throw new Error("Restore failed");
       }
+      toast.success("Lookbook entry restored.");
       router.refresh();
     } catch (restoreError) {
       console.error(restoreError);
       setError("Unable to restore lookbook entry.");
+      toast.error("Unable to restore lookbook entry.");
+    } finally {
+      setPendingEntryId(null);
+      setPendingEntryAction(null);
     }
   }
 
@@ -313,7 +337,9 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
             onDragStart={() => setDraggedId(entry.id)}
             onDragOver={(event) => event.preventDefault()}
             onDrop={() => void onDrop(entry.id)}
-            className="grid gap-3 rounded-lg border border-[#2a2d3a] bg-[#1a1d27] p-3 md:grid-cols-[auto_1fr_auto]"
+            className={`grid gap-3 rounded-lg border border-[#2a2d3a] bg-[#1a1d27] p-3 md:grid-cols-[auto_1fr_auto] ${
+              entry.active ? "" : "opacity-60"
+            }`}
           >
             <button
               type="button"
@@ -351,15 +377,34 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
                     : "bg-[#6b7280]/20 text-[#d1d5db]"
                 }`}
                 onClick={async () => {
-                  await fetch(`/api/admin/lookbook/${entry.id}`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ active: !entry.active })
-                  });
-                  router.refresh();
+                  setPendingEntryId(entry.id);
+                  setPendingEntryAction("toggle");
+                  try {
+                    const response = await fetch(`/api/admin/lookbook/${entry.id}`, {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ active: !entry.active })
+                    });
+                    if (!response.ok) {
+                      throw new Error("Toggle failed");
+                    }
+                    toast.success(`Lookbook entry ${entry.active ? "deactivated" : "activated"}.`);
+                    router.refresh();
+                  } catch (toggleError) {
+                    console.error(toggleError);
+                    toast.error("Unable to update lookbook entry status.");
+                  } finally {
+                    setPendingEntryId(null);
+                    setPendingEntryAction(null);
+                  }
                 }}
+                disabled={pendingEntryId === entry.id && pendingEntryAction === "toggle"}
               >
-                {entry.active ? "Active" : "Inactive"}
+                {pendingEntryId === entry.id && pendingEntryAction === "toggle"
+                  ? "Saving..."
+                  : entry.active
+                    ? "Active"
+                    : "Inactive"}
               </button>
               <button
                 type="button"
@@ -373,18 +418,26 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
                 <button
                   type="button"
                   onClick={() => void deleteEntry(entry.id)}
+                  disabled={pendingEntryId === entry.id && pendingEntryAction === "delete"}
                   className="text-[#fca5a5] hover:text-[#ef4444]"
                   aria-label="Delete lookbook entry"
                 >
-                  <Trash2 size={15} />
+                  {pendingEntryId === entry.id && pendingEntryAction === "delete" ? (
+                    <span className="text-[11px] font-medium">Deleting...</span>
+                  ) : (
+                    <Trash2 size={15} />
+                  )}
                 </button>
               ) : (
                 <button
                   type="button"
                   onClick={() => void restoreEntry(entry.id)}
+                  disabled={pendingEntryId === entry.id && pendingEntryAction === "restore"}
                   className="text-[11px] font-medium uppercase tracking-wide text-[#86efac] transition hover:text-[#22c55e]"
                 >
-                  Restore
+                  {pendingEntryId === entry.id && pendingEntryAction === "restore"
+                    ? "Restoring..."
+                    : "Restore"}
                 </button>
               )}
             </div>

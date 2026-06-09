@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { toast } from "sonner";
 
 interface DiscountRow {
   id: string;
@@ -35,6 +36,8 @@ export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
   const [maxUses, setMaxUses] = useState<number | "">("");
   const [expiry, setExpiry] = useState("");
   const [active, setActive] = useState(true);
+  const [pendingToggleId, setPendingToggleId] = useState<string | null>(null);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   async function createDiscount(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -65,16 +68,19 @@ export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
       setMaxUses("");
       setExpiry("");
       setActive(true);
+      toast.success("Discount created.");
       router.refresh();
     } catch (submitError) {
       console.error(submitError);
       setError("Unable to create discount.");
+      toast.error("Unable to create discount.");
     } finally {
       setSaving(false);
     }
   }
 
   async function toggleActive(discountId: string, nextActive: boolean) {
+    setPendingToggleId(discountId);
     try {
       const response = await fetch(`/api/admin/discounts/${discountId}`, {
         method: "PATCH",
@@ -84,16 +90,20 @@ export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
       if (!response.ok) {
         throw new Error("Unable to toggle discount state");
       }
+      toast.success(`Discount ${nextActive ? "activated" : "deactivated"}.`);
       router.refresh();
     } catch (toggleError) {
       console.error(toggleError);
-      window.alert("Unable to update discount.");
+      toast.error("Unable to update discount.");
+    } finally {
+      setPendingToggleId(null);
     }
   }
 
   async function deleteDiscount(discountId: string) {
     const confirmed = window.confirm("Delete this discount code?");
     if (!confirmed) return;
+    setPendingDeleteId(discountId);
     try {
       const response = await fetch(`/api/admin/discounts/${discountId}`, {
         method: "DELETE"
@@ -101,10 +111,13 @@ export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
       if (!response.ok) {
         throw new Error("Unable to delete discount");
       }
+      toast.success("Discount deleted.");
       router.refresh();
     } catch (deleteError) {
       console.error(deleteError);
-      window.alert("Unable to delete discount.");
+      toast.error("Unable to delete discount.");
+    } finally {
+      setPendingDeleteId(null);
     }
   }
 
@@ -248,22 +261,28 @@ export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
                     <button
                       type="button"
                       onClick={() => toggleActive(discount.id, !discount.active)}
+                      disabled={pendingToggleId === discount.id}
                       className={`rounded-full px-2 py-1 text-[11px] font-medium ${
                         discount.active
                           ? "bg-[#22c55e]/20 text-[#86efac]"
                           : "bg-[#6b7280]/20 text-[#d1d5db]"
                       }`}
                     >
-                      {discount.active ? "Active" : "Inactive"}
+                      {pendingToggleId === discount.id
+                        ? "Saving..."
+                        : discount.active
+                          ? "Active"
+                          : "Inactive"}
                     </button>
                   </td>
                   <td className="px-4 py-3">
                     <button
                       type="button"
                       onClick={() => deleteDiscount(discount.id)}
+                      disabled={pendingDeleteId === discount.id}
                       className="text-xs text-[#fca5a5] transition hover:text-[#ef4444]"
                     >
-                      Delete
+                      {pendingDeleteId === discount.id ? "Deleting..." : "Delete"}
                     </button>
                   </td>
                 </tr>

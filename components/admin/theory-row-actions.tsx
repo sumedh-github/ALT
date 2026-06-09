@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface TheoryRowActionsProps {
   theoryId: string;
@@ -25,10 +26,11 @@ export function TheoryRowActions({ theoryId, active }: TheoryRowActionsProps) {
       if (!response.ok) {
         throw new Error("Failed to delete theory");
       }
+      toast.success("Theory deactivated.");
       router.refresh();
     } catch (error) {
       console.error(error);
-      window.alert("Unable to delete theory.");
+      toast.error("Unable to deactivate theory.");
     } finally {
       setDeleting(false);
     }
@@ -45,10 +47,11 @@ export function TheoryRowActions({ theoryId, active }: TheoryRowActionsProps) {
       if (!response.ok) {
         throw new Error("Failed to restore theory");
       }
+      toast.success("Theory restored.");
       router.refresh();
     } catch (error) {
       console.error(error);
-      window.alert("Unable to restore theory.");
+      toast.error("Unable to restore theory.");
     } finally {
       setRestoring(false);
     }

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { Copy, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { ImageUploader } from "@/components/admin/image-uploader";
 
@@ -20,11 +21,13 @@ interface MediaPanelProps {
 
 export function MediaPanel({ files }: MediaPanelProps) {
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
+  const [pendingDeleteFile, setPendingDeleteFile] = useState<string | null>(null);
   const router = useRouter();
 
   async function deleteFile(filename: string) {
     const confirmed = window.confirm("Delete this media file?");
     if (!confirmed) return;
+    setPendingDeleteFile(filename);
     try {
       const response = await fetch("/api/admin/media", {
         method: "DELETE",
@@ -34,10 +37,13 @@ export function MediaPanel({ files }: MediaPanelProps) {
       if (!response.ok) {
         throw new Error("Unable to delete media");
       }
+      toast.success("Media file deleted.");
       router.refresh();
     } catch (error) {
       console.error(error);
-      window.alert("Unable to delete media file.");
+      toast.error("Unable to delete media file.");
+    } finally {
+      setPendingDeleteFile(null);
     }
   }
 
@@ -64,6 +70,7 @@ export function MediaPanel({ files }: MediaPanelProps) {
           value={uploadedUrls}
           onChange={(urls) => {
             setUploadedUrls(urls);
+            toast.success("Media uploaded.");
             router.refresh();
           }}
           maxImages={5}
@@ -102,10 +109,11 @@ export function MediaPanel({ files }: MediaPanelProps) {
                 <button
                   type="button"
                   onClick={() => void deleteFile(file.filename)}
+                  disabled={pendingDeleteFile === file.filename}
                   className="inline-flex items-center gap-1 rounded-md border border-[#2a2d3a] px-2 py-1 text-[11px] text-[#fca5a5] transition hover:border-[#ef4444] hover:text-[#ef4444]"
                 >
                   <Trash2 size={12} />
-                  Delete
+                  {pendingDeleteFile === file.filename ? "Deleting..." : "Delete"}
                 </button>
               </div>
             </div>

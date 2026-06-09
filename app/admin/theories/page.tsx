@@ -47,7 +47,12 @@ export default async function AdminTheoriesPage() {
             </thead>
             <tbody>
               {theories.map((theory) => (
-                <tr key={theory.id} className="border-b border-[#2a2d3a]/70">
+                <tr
+                  key={theory.id}
+                  className={`border-b border-[#2a2d3a]/70 ${
+                    theory.active ? "" : "bg-[#0f1117]/40 opacity-65"
+                  }`}
+                >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <div className="relative h-12 w-16 overflow-hidden rounded border border-[#2a2d3a] bg-[#0f1117]">

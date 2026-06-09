@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { ImageUploader } from "@/components/admin/image-uploader";
 
@@ -139,13 +140,16 @@ export function ProductForm({ mode, categories, initialData }: ProductFormProps)
       const json = await response.json();
       if (!response.ok) {
         setError(json.error ?? "Unable to save product.");
+        toast.error(json.error ?? "Unable to save product.");
         return;
       }
-      router.push("/admin/products");
+      toast.success(mode === "create" ? "Product created." : "Product updated.");
       router.refresh();
+      router.push("/admin/products");
     } catch (submitError) {
       console.error(submitError);
       setError("Unable to save product.");
+      toast.error("Unable to save product.");
     } finally {
       setSaving(false);
     }

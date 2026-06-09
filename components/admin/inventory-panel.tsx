@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type StockFilter = "ALL" | "LOW_STOCK" | "OUT_OF_STOCK";
 
@@ -37,6 +38,7 @@ function cellColor(inventory: number) {
 export function InventoryPanel({ products }: InventoryPanelProps) {
   const [filter, setFilter] = useState<StockFilter>("ALL");
   const [editingVariantId, setEditingVariantId] = useState<string | null>(null);
+  const [savingVariantId, setSavingVariantId] = useState<string | null>(null);
   const [editingValue, setEditingValue] = useState("");
   const router = useRouter();
 
@@ -59,6 +61,7 @@ export function InventoryPanel({ products }: InventoryPanelProps) {
       setEditingVariantId(null);
       return;
     }
+    setSavingVariantId(variantId);
     try {
       const response = await fetch(`/api/admin/inventory/${variantId}`, {
         method: "PATCH",
@@ -68,12 +71,14 @@ export function InventoryPanel({ products }: InventoryPanelProps) {
       if (!response.ok) {
         throw new Error("Unable to update inventory");
       }
+      toast.success("Inventory updated.");
       router.refresh();
     } catch (error) {
       console.error(error);
-      window.alert("Unable to update inventory.");
+      toast.error("Unable to update inventory.");
     } finally {
       setEditingVariantId(null);
+      setSavingVariantId(null);
     }
   }
 
@@ -147,8 +152,9 @@ export function InventoryPanel({ products }: InventoryPanelProps) {
                             className={`inline-flex min-w-12 items-center justify-center rounded-md px-2 py-1 text-xs font-medium ${cellColor(
                               value
                             )}`}
+                            disabled={savingVariantId === variant?.id}
                           >
-                            {value}
+                            {savingVariantId === variant?.id ? "Saving..." : value}
                           </button>
                         )}
                       </td>

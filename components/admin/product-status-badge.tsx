@@ -12,6 +12,12 @@ const statusClasses: Record<ProductStatus, string> = {
   DELETED: "bg-[#ef4444]/20 text-[#fca5a5]"
 };
 
+const statusLabels: Record<ProductStatus, string> = {
+  DRAFT: "Draft",
+  ACTIVE: "Active",
+  DELETED: "Deleted"
+};
+
 export function ProductStatusBadge({ status }: ProductStatusBadgeProps) {
   return (
     <span
@@ -20,7 +26,7 @@ export function ProductStatusBadge({ status }: ProductStatusBadgeProps) {
         statusClasses[status]
       )}
     >
-      {status}
+      {statusLabels[status]}
     </span>
   );
 }

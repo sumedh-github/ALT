@@ -1,6 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface NewsletterSubscriberRow {
   id: string;
@@ -14,10 +16,12 @@ interface NewsletterPanelProps {
 
 export function NewsletterPanel({ subscribers }: NewsletterPanelProps) {
   const router = useRouter();
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   async function deleteSubscriber(id: string) {
     const confirmed = window.confirm("Delete this subscriber?");
     if (!confirmed) return;
+    setPendingDeleteId(id);
     try {
       const response = await fetch(`/api/admin/newsletter/${id}`, {
         method: "DELETE"
@@ -25,10 +29,13 @@ export function NewsletterPanel({ subscribers }: NewsletterPanelProps) {
       if (!response.ok) {
         throw new Error("Unable to delete subscriber");
       }
+      toast.success("Subscriber deleted.");
       router.refresh();
     } catch (error) {
       console.error(error);
-      window.alert("Unable to delete subscriber.");
+      toast.error("Unable to delete subscriber.");
+    } finally {
+      setPendingDeleteId(null);
     }
   }
 
@@ -58,9 +65,10 @@ export function NewsletterPanel({ subscribers }: NewsletterPanelProps) {
                   <button
                     type="button"
                     onClick={() => void deleteSubscriber(subscriber.id)}
+                    disabled={pendingDeleteId === subscriber.id}
                     className="text-xs text-[#fca5a5] transition hover:text-[#ef4444]"
                   >
-                    Delete
+                    {pendingDeleteId === subscriber.id ? "Deleting..." : "Delete"}
                   </button>
                 </td>
               </tr>

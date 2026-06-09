@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Toaster } from "sonner";
 
 import { AdminShell } from "@/components/admin/admin-shell";
 import { auth } from "@/lib/auth";
@@ -21,6 +22,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
       <AdminShell userEmail={session.user.email ?? "admin@averolosetheory.com"}>
         {children}
       </AdminShell>
+      <Toaster position="bottom-right" theme="dark" />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import type { OrderStatus } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { toast } from "sonner";
 
 interface OrderStatusFormProps {
   orderId: string;
@@ -32,12 +33,15 @@ export function OrderStatusForm({ orderId, initialStatus }: OrderStatusFormProps
       const json = await response.json();
       if (!response.ok) {
         setError(json.error ?? "Unable to update order.");
+        toast.error(json.error ?? "Unable to update order.");
         return;
       }
+      toast.success("Order updated.");
       router.refresh();
     } catch (submitError) {
       console.error(submitError);
       setError("Unable to update order.");
+      toast.error("Unable to update order.");
     } finally {
       setSaving(false);
     }

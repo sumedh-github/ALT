@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { toast } from "sonner";
 
 import { ImageUploader } from "@/components/admin/image-uploader";
 
@@ -104,13 +105,16 @@ export function TheoryForm({ mode, products, initialData }: TheoryFormProps) {
       const json = await response.json();
       if (!response.ok) {
         setError(json.error ?? "Unable to save theory.");
+        toast.error(json.error ?? "Unable to save theory.");
         return;
       }
-      router.push("/admin/theories");
+      toast.success(mode === "create" ? "Theory created." : "Theory updated.");
       router.refresh();
+      router.push("/admin/theories");
     } catch (submitError) {
       console.error(submitError);
       setError("Unable to save theory.");
+      toast.error("Unable to save theory.");
     } finally {
       setSaving(false);
     }
