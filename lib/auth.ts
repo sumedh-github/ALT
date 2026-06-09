@@ -1,6 +1,6 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { Role } from "@prisma/client";
-import bcrypt from "bcryptjs";
+import bcryptjs from "bcryptjs";
 import NextAuth, { type DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
@@ -27,6 +27,11 @@ declare module "next-auth/jwt" {
   }
 }
 
+type CredentialsInput = {
+  email: string;
+  password: string;
+};
+
 const providers = [
   Credentials({
     name: "Credentials",
@@ -35,22 +40,40 @@ const providers = [
       password: { label: "Password", type: "password" }
     },
     async authorize(credentials) {
-      const email = credentials?.email;
-      const password = credentials?.password;
-
-      if (typeof email !== "string" || typeof password !== "string") {
+      console.log("Login attempt:", credentials?.email);
+      if (
+        typeof credentials?.email !== "string" ||
+        typeof credentials?.password !== "string"
+      ) {
         return null;
       }
 
+      const typedCredentials: CredentialsInput = {
+        email: credentials.email.toLowerCase().trim(),
+        password: credentials.password
+      };
+
       const user = await prisma.user.findUnique({
-        where: { email }
+        where: { email: typedCredentials.email }
       });
+      console.log("User found:", user ? "yes" : "no");
+
+      if (user?.password) {
+        const match = await bcryptjs.compare(
+          typedCredentials.password,
+          user.password
+        );
+        console.log("Password match:", match);
+      }
 
       if (!user?.password) {
         return null;
       }
 
-      const passwordMatches = await bcrypt.compare(password, user.password);
+      const passwordMatches = await bcryptjs.compare(
+        typedCredentials.password,
+        user.password
+      );
       if (!passwordMatches) {
         return null;
       }
