@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { AccountSignOutButton } from "@/app/account/account-sign-out-button";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -30,9 +31,12 @@ export default async function AccountPage() {
   return (
     <div className="space-y-10 pb-10">
       <header className="space-y-3">
-        <p className="font-display text-[clamp(3rem,8vw,6rem)] leading-[0.86] text-text">
-          MY THEORY
-        </p>
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <p className="font-display text-[clamp(3rem,8vw,6rem)] leading-[0.86] text-text">
+            MY THEORY
+          </p>
+          <AccountSignOutButton />
+        </div>
         <p className="font-body text-sm text-muted">
           {session.user.name ?? "Unnamed"} · {session.user.email}
         </p>

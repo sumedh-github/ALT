@@ -1,8 +1,9 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Heart, Menu, ShoppingBag } from "lucide-react";
+import { ChevronDown, Heart, LogOut, Menu, ShoppingBag } from "lucide-react";
 import Link from "next/link";
+import { SessionProvider, signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 import { CartDrawer } from "@/components/alt/cart-drawer";
@@ -19,9 +20,19 @@ const desktopLinks = [
 ];
 
 export function AltNavbar() {
+  return (
+    <SessionProvider>
+      <AltNavbarContent />
+    </SessionProvider>
+  );
+}
+
+function AltNavbarContent() {
   const [mounted, setMounted] = useState(false);
   const [theoriesOpen, setTheoriesOpen] = useState(false);
   const [mobileTheoriesOpen, setMobileTheoriesOpen] = useState(false);
+  const { status } = useSession();
+  const isLoggedIn = status === "authenticated";
   const { quantity } = useCartSummary();
   const { count } = useWishlistSummary();
   const setCartOpen = useUiStore((state) => state.setCartOpen);
@@ -119,6 +130,32 @@ export function AltNavbar() {
         </nav>
 
         <div className="flex items-center gap-3">
+          {isLoggedIn ? (
+            <>
+              <Link
+                href="/account"
+                className="hidden font-body text-[11px] uppercase tracking-widest text-muted transition-colors duration-200 hover:text-gold sm:inline-block"
+              >
+                MY THEORY
+              </Link>
+              <button
+                type="button"
+                className="hidden p-1 text-gold transition hover:text-taupe sm:inline-flex"
+                onClick={() => signOut({ callbackUrl: "/" })}
+                aria-label="Sign out"
+              >
+                <LogOut size={18} />
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="hidden font-body text-[11px] uppercase tracking-widest text-muted transition-colors duration-200 hover:text-gold sm:inline-block"
+            >
+              LOGIN
+            </Link>
+          )}
+
           <Link
             href="/wishlist"
             className="relative p-1 text-gold transition hover:text-taupe"
@@ -213,6 +250,47 @@ export function AltNavbar() {
                   {link.label}
                 </Link>
               ))}
+
+            <div className="mt-2 border-t border-white/10 pt-3">
+              {isLoggedIn ? (
+                <div className="flex flex-col gap-2">
+                  <Link
+                    href="/account"
+                    className="font-body text-[13px] font-medium uppercase tracking-widest text-text transition-colors duration-200 hover:text-gold"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    My Account
+                  </Link>
+                  <button
+                    type="button"
+                    className="text-left font-body text-[13px] font-medium uppercase tracking-widest text-red-300/80 transition-colors duration-200 hover:text-red-200"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      void signOut({ callbackUrl: "/" });
+                    }}
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <Link
+                    href="/login"
+                    className="font-body text-[13px] font-medium uppercase tracking-widest text-text transition-colors duration-200 hover:text-gold"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="font-body text-[13px] font-medium uppercase tracking-widest text-text transition-colors duration-200 hover:text-gold"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Join
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       ) : null}
