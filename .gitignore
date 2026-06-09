@@ -10,3 +10,5 @@ dist
 build
 *.log
 *.tsbuildinfo
+
+/lib/generated/prisma
