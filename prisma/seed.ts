@@ -1,22 +1,20 @@
 import "dotenv/config";
 
-import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, ProductStatus, Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { Pool } from "pg";
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
   throw new Error("DATABASE_URL is not set for seeding.");
 }
 
-const adapter = new PrismaPg(
-  new Pool({
-    connectionString: databaseUrl
-  })
-);
-
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: databaseUrl
+    }
+  }
+});
 
 const sizes = ["XS", "S", "M", "L", "XL", "XXL"] as const;
 
