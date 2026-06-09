@@ -144,11 +144,11 @@ export function LookbookPanel({ entries, products }: LookbookPanelProps) {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title,
-          subtitle: subtitle || null,
+          title: title.trim(),
+          subtitle: subtitle.trim() ? subtitle.trim() : null,
           imageUrl: images[0],
           active,
-          order,
+          order: Number.isFinite(order) ? Math.max(0, Math.trunc(order)) : 0,
           productId: linkedProductId || null
         })
       });

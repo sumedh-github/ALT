@@ -5,7 +5,7 @@ import { requireAdminRoute } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 
 const inventoryUpdateSchema = z.object({
-  inventory: z.number().int().nonnegative()
+  inventory: z.coerce.number().int().nonnegative()
 });
 
 interface InventoryRouteProps {
@@ -22,7 +22,16 @@ export async function PATCH(request: NextRequest, { params }: InventoryRouteProp
 
   try {
     const body = await request.json();
-    const payload = inventoryUpdateSchema.parse(body);
+    const parsed = inventoryUpdateSchema.safeParse(body);
+    if (!parsed.success) {
+      console.error("Validation error:", parsed.error.flatten());
+      return NextResponse.json(
+        { error: "Validation failed", details: parsed.error.flatten() },
+        { status: 400 }
+      );
+    }
+    const payload = parsed.data;
+
     const variant = await prisma.productVariant.update({
       where: { id: params.variantId },
       data: { inventory: payload.inventory },
@@ -34,12 +43,6 @@ export async function PATCH(request: NextRequest, { params }: InventoryRouteProp
     return NextResponse.json({ variant });
   } catch (error) {
     console.error(error);
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Invalid inventory payload." },
-        { status: 400 }
-      );
-    }
     return NextResponse.json(
       { error: "Unable to update inventory right now." },
       { status: 500 }

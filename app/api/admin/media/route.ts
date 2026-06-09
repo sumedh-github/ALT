@@ -7,7 +7,7 @@ import { z } from "zod";
 import { requireAdminRoute } from "@/lib/admin-auth";
 
 const deleteMediaSchema = z.object({
-  filename: z.string().min(1)
+  filename: z.string().trim().min(1)
 });
 
 function uploadDir() {
@@ -57,16 +57,22 @@ export async function DELETE(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const payload = deleteMediaSchema.parse(body);
+    const parsed = deleteMediaSchema.safeParse(body);
+    if (!parsed.success) {
+      console.error("Validation error:", parsed.error.flatten());
+      return NextResponse.json(
+        { error: "Validation failed", details: parsed.error.flatten() },
+        { status: 400 }
+      );
+    }
+    const payload = parsed.data;
+
     const safeFileName = path.basename(payload.filename);
     const fullPath = path.join(uploadDir(), safeFileName);
     await fs.unlink(fullPath);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error(error);
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: "Invalid media delete payload." }, { status: 400 });
-    }
     return NextResponse.json(
       { error: "Failed to delete media file." },
       { status: 500 }

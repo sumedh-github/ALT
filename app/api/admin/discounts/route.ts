@@ -4,13 +4,28 @@ import { z } from "zod";
 import { requireAdminRoute } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 
+const booleanFromInputSchema = z.preprocess((value) => {
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === "true") return true;
+    if (normalized === "false") return false;
+  }
+  return value;
+}, z.boolean());
+
 const createDiscountSchema = z.object({
-  code: z.string().min(3),
+  code: z.string().trim().min(3),
   type: z.enum(["PERCENTAGE", "FIXED"]),
-  value: z.number().positive(),
-  maxUses: z.number().int().positive().nullable().optional(),
-  expiresAt: z.string().datetime().nullable().optional(),
-  active: z.boolean().default(true)
+  value: z.coerce.number().positive(),
+  maxUses: z
+    .union([z.coerce.number().int().positive(), z.null(), z.literal("")])
+    .optional()
+    .transform((value) => (value === "" || value === undefined ? null : value)),
+  expiresAt: z
+    .union([z.string().datetime(), z.null(), z.literal("")])
+    .optional()
+    .transform((value) => (value === "" || value === undefined ? null : value)),
+  active: booleanFromInputSchema.optional().default(true)
 });
 
 export async function GET() {
@@ -38,7 +53,16 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const payload = createDiscountSchema.parse(body);
+    const parsed = createDiscountSchema.safeParse(body);
+    if (!parsed.success) {
+      console.error("Validation error:", parsed.error.flatten());
+      return NextResponse.json(
+        { error: "Validation failed", details: parsed.error.flatten() },
+        { status: 400 }
+      );
+    }
+    const payload = parsed.data;
+
     const discount = await prisma.discountCode.create({
       data: {
         code: payload.code.toUpperCase(),
@@ -57,12 +81,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ discount }, { status: 201 });
   } catch (error) {
     console.error(error);
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Invalid discount payload.", details: error.flatten() },
-        { status: 400 }
-      );
-    }
     return NextResponse.json({ error: "Failed to create discount." }, { status: 500 });
   }
 }

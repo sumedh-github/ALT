@@ -4,17 +4,38 @@ import { z } from "zod";
 import { requireAdminRoute } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 
+const localOrRemoteImageSchema = z
+  .string()
+  .trim()
+  .refine((value) => {
+    if (!value) return false;
+    if (value.startsWith("/uploads/")) return true;
+    return z.string().url().safeParse(value).success;
+  }, "Image must be a valid URL or /uploads path.");
+
+const booleanFromInputSchema = z.preprocess((value) => {
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === "true") return true;
+    if (normalized === "false") return false;
+  }
+  return value;
+}, z.boolean());
+
 const theoryUpdateSchema = z.object({
-  number: z.string().min(3),
-  name: z.string().min(2),
-  slug: z.string().min(2),
-  tagline: z.string().optional().default(""),
+  number: z.string().trim().min(3),
+  name: z.string().trim().min(2),
+  slug: z.string().trim().min(2),
+  tagline: z.string().optional().or(z.literal("")).default(""),
   description: z.string().min(500),
-  season: z.string().optional().default(""),
-  year: z.number().int().optional().nullable(),
-  image: z.string().url(),
-  active: z.boolean().default(true),
-  productIds: z.array(z.string()).default([])
+  season: z.string().optional().or(z.literal("")).default(""),
+  year: z
+    .union([z.coerce.number().int(), z.null(), z.literal("")])
+    .optional()
+    .transform((value) => (value === "" || value === undefined ? null : value)),
+  image: z.string().optional().or(z.literal("")).default(""),
+  active: booleanFromInputSchema.optional().default(true),
+  productIds: z.array(z.string()).optional().default([])
 });
 
 interface TheoryRouteProps {
@@ -31,7 +52,27 @@ export async function PATCH(request: NextRequest, { params }: TheoryRouteProps) 
 
   try {
     const body = await request.json();
-    const payload = theoryUpdateSchema.parse(body);
+    const parsed = theoryUpdateSchema.safeParse(body);
+    if (!parsed.success) {
+      console.error("Validation error:", parsed.error.flatten());
+      return NextResponse.json(
+        { error: "Validation failed", details: parsed.error.flatten() },
+        { status: 400 }
+      );
+    }
+
+    const payload = parsed.data;
+    const imageValidation = localOrRemoteImageSchema.safeParse(payload.image);
+    if (!imageValidation.success) {
+      return NextResponse.json(
+        {
+          error: "Validation failed",
+          details: { fieldErrors: { image: [imageValidation.error.issues[0]?.message ?? "Invalid image"] } }
+        },
+        { status: 400 }
+      );
+    }
+
     const theory = await prisma.theory.update({
       where: { id: params.id },
       data: {
@@ -61,12 +102,6 @@ export async function PATCH(request: NextRequest, { params }: TheoryRouteProps) 
     return NextResponse.json({ theory });
   } catch (error) {
     console.error(error);
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Invalid theory payload.", details: error.flatten() },
-        { status: 400 }
-      );
-    }
     return NextResponse.json({ error: "Failed to update theory." }, { status: 500 });
   }
 }

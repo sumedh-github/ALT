@@ -4,8 +4,17 @@ import { z } from "zod";
 import { requireAdminRoute } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 
+const booleanFromInputSchema = z.preprocess((value) => {
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === "true") return true;
+    if (normalized === "false") return false;
+  }
+  return value;
+}, z.boolean());
+
 const updateDiscountSchema = z.object({
-  active: z.boolean()
+  active: booleanFromInputSchema
 });
 
 interface DiscountRouteProps {
@@ -22,7 +31,16 @@ export async function PATCH(request: NextRequest, { params }: DiscountRouteProps
 
   try {
     const body = await request.json();
-    const payload = updateDiscountSchema.parse(body);
+    const parsed = updateDiscountSchema.safeParse(body);
+    if (!parsed.success) {
+      console.error("Validation error:", parsed.error.flatten());
+      return NextResponse.json(
+        { error: "Validation failed", details: parsed.error.flatten() },
+        { status: 400 }
+      );
+    }
+    const payload = parsed.data;
+
     const discount = await prisma.discountCode.update({
       where: { id: params.id },
       data: {
@@ -36,12 +54,6 @@ export async function PATCH(request: NextRequest, { params }: DiscountRouteProps
     return NextResponse.json({ discount });
   } catch (error) {
     console.error(error);
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Invalid discount update payload.", details: error.flatten() },
-        { status: 400 }
-      );
-    }
     return NextResponse.json({ error: "Failed to update discount." }, { status: 500 });
   }
 }

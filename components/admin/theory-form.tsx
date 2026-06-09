@@ -50,7 +50,7 @@ export function TheoryForm({ mode, products, initialData }: TheoryFormProps) {
   const [tagline, setTagline] = useState(initialData?.tagline ?? "");
   const [description, setDescription] = useState(initialData?.description ?? "");
   const [season, setSeason] = useState(initialData?.season ?? "");
-  const [year, setYear] = useState(initialData?.year ?? new Date().getFullYear());
+  const [year, setYear] = useState(initialData?.year ? String(initialData.year) : "");
   const [image, setImage] = useState(initialData?.image ? [initialData.image] : []);
   const [active, setActive] = useState(initialData?.active ?? true);
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>(
@@ -74,6 +74,11 @@ export function TheoryForm({ mode, products, initialData }: TheoryFormProps) {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!image[0]) {
+      setError("Please upload a hero image.");
+      return;
+    }
+
     setSaving(true);
     setError(null);
     try {
@@ -84,16 +89,16 @@ export function TheoryForm({ mode, products, initialData }: TheoryFormProps) {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          number,
-          name,
-          slug,
-          tagline,
+          number: number.trim(),
+          name: name.trim(),
+          slug: slug.trim(),
+          tagline: tagline.trim(),
           description,
-          season,
-          year: Number(year),
+          season: season.trim(),
+          year: year === "" ? null : Number.parseInt(year, 10),
           image: image[0],
           active,
-          productIds: selectedProductIds
+          productIds: selectedProductIds ?? []
         })
       });
       const json = await response.json();
@@ -166,7 +171,7 @@ export function TheoryForm({ mode, products, initialData }: TheoryFormProps) {
           <input
             type="number"
             value={year}
-            onChange={(event) => setYear(Number(event.target.value))}
+            onChange={(event) => setYear(event.target.value)}
             className="h-10 w-full rounded-md border border-[#2a2d3a] bg-[#0f1117] px-3 text-[#e2e4ed] focus:border-[#6366f1] focus:outline-none"
           />
         </label>

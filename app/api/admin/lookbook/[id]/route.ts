@@ -4,13 +4,41 @@ import { z } from "zod";
 import { requireAdminRoute } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 
+const localOrRemoteImageSchema = z
+  .string()
+  .trim()
+  .refine((value) => {
+    if (!value) return false;
+    if (value.startsWith("/uploads/")) return true;
+    return z.string().url().safeParse(value).success;
+  }, "Image must be a valid URL or /uploads path.");
+
+const booleanFromInputSchema = z.preprocess((value) => {
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === "true") return true;
+    if (normalized === "false") return false;
+  }
+  return value;
+}, z.boolean());
+
 const lookbookUpdateSchema = z.object({
-  title: z.string().min(2).optional(),
-  subtitle: z.string().optional().nullable(),
-  imageUrl: z.string().url().optional(),
-  order: z.number().int().nonnegative().optional(),
-  active: z.boolean().optional(),
-  productId: z.string().optional().nullable()
+  title: z.string().trim().min(2).optional(),
+  subtitle: z.string().optional().nullable().or(z.literal("")),
+  imageUrl: z
+    .string()
+    .trim()
+    .optional()
+    .or(z.literal(""))
+    .transform((value) => (value === "" ? undefined : value)),
+  order: z.coerce.number().int().nonnegative().optional(),
+  active: booleanFromInputSchema.optional(),
+  productId: z
+    .string()
+    .optional()
+    .nullable()
+    .or(z.literal(""))
+    .transform((value) => (value === "" ? null : value))
 });
 
 interface LookbookRouteProps {
@@ -27,7 +55,29 @@ export async function PATCH(request: NextRequest, { params }: LookbookRouteProps
 
   try {
     const body = await request.json();
-    const payload = lookbookUpdateSchema.parse(body);
+    const parsed = lookbookUpdateSchema.safeParse(body);
+    if (!parsed.success) {
+      console.error("Validation error:", parsed.error.flatten());
+      return NextResponse.json(
+        { error: "Validation failed", details: parsed.error.flatten() },
+        { status: 400 }
+      );
+    }
+    const payload = parsed.data;
+
+    if (payload.imageUrl !== undefined) {
+      const imageValidation = localOrRemoteImageSchema.safeParse(payload.imageUrl);
+      if (!imageValidation.success) {
+        return NextResponse.json(
+          {
+            error: "Validation failed",
+            details: { fieldErrors: { imageUrl: [imageValidation.error.issues[0]?.message ?? "Invalid image"] } }
+          },
+          { status: 400 }
+        );
+      }
+    }
+
     const entry = await prisma.lookbookEntry.update({
       where: { id: params.id },
       data: {
@@ -47,12 +97,6 @@ export async function PATCH(request: NextRequest, { params }: LookbookRouteProps
     return NextResponse.json({ entry });
   } catch (error) {
     console.error(error);
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Invalid lookbook payload.", details: error.flatten() },
-        { status: 400 }
-      );
-    }
     return NextResponse.json(
       { error: "Failed to update lookbook entry." },
       { status: 500 }

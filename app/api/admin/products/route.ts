@@ -4,25 +4,48 @@ import { z } from "zod";
 import { requireAdminRoute } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 
+const localOrRemoteImageSchema = z
+  .string()
+  .trim()
+  .refine((value) => {
+    if (!value) return false;
+    if (value.startsWith("/uploads/")) return true;
+    return z.string().url().safeParse(value).success;
+  }, "Image must be a valid URL or /uploads path.");
+
+const booleanFromInputSchema = z.preprocess((value) => {
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === "true") return true;
+    if (normalized === "false") return false;
+  }
+  return value;
+}, z.boolean());
+
 const productPayloadSchema = z.object({
-  name: z.string().min(2),
-  slug: z.string().min(2),
-  categoryId: z.string().min(1),
-  shortDescription: z.string().optional().default(""),
-  description: z.string().min(8),
-  price: z.number().int().nonnegative(),
-  compareAtPrice: z.number().int().nonnegative().nullable().optional(),
+  name: z.string().trim().min(2),
+  slug: z.string().trim().min(2),
+  categoryId: z.string().trim().min(1),
+  shortDescription: z.string().optional().or(z.literal("")).default(""),
+  description: z.string().trim().min(8),
+  price: z.coerce.number().int().nonnegative(),
+  compareAtPrice: z
+    .union([z.coerce.number().int().nonnegative(), z.null(), z.literal("")])
+    .optional()
+    .transform((value) => (value === "" || value === undefined ? null : value)),
   status: z.enum(["DRAFT", "ACTIVE"]),
-  featured: z.boolean(),
+  featured: booleanFromInputSchema.optional().default(false),
   variants: z
     .array(
       z.object({
-        size: z.string().min(1),
-        inventory: z.number().int().nonnegative()
+        size: z.string().trim().min(1),
+        inventory: z.coerce.number().int().nonnegative()
       })
     )
-    .min(1),
-  images: z.array(z.string().url()).max(5)
+    .optional()
+    .default([])
+    .refine((value) => value.length > 0, "At least one variant is required."),
+  images: z.array(z.string().trim()).optional().default([])
 });
 
 export async function GET() {
@@ -63,7 +86,24 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const payload = productPayloadSchema.parse(body);
+    const parsed = productPayloadSchema.safeParse(body);
+    if (!parsed.success) {
+      console.error("Validation error:", parsed.error.flatten());
+      return NextResponse.json(
+        { error: "Validation failed", details: parsed.error.flatten() },
+        { status: 400 }
+      );
+    }
+    const payload = parsed.data;
+
+    const imageValidation = z.array(localOrRemoteImageSchema).safeParse(payload.images);
+    if (!imageValidation.success) {
+      return NextResponse.json(
+        { error: "Validation failed", details: imageValidation.error.flatten() },
+        { status: 400 }
+      );
+    }
+
     const created = await prisma.product.create({
       data: {
         name: payload.name,
@@ -99,12 +139,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ product: created }, { status: 201 });
   } catch (error) {
     console.error(error);
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Invalid product payload.", details: error.flatten() },
-        { status: 400 }
-      );
-    }
     return NextResponse.json({ error: "Failed to create product." }, { status: 500 });
   }
 }
