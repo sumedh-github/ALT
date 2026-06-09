@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { ImageUploader } from "@/components/admin/image-uploader";
@@ -52,6 +52,7 @@ function toSlug(value: string) {
 
 export function ProductForm({ mode, categories, initialData }: ProductFormProps) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [name, setName] = useState(initialData?.name ?? "");
   const [slug, setSlug] = useState(initialData?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(Boolean(initialData?.slug));
@@ -78,6 +79,12 @@ export function ProductForm({ mode, categories, initialData }: ProductFormProps)
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  function refreshData() {
+    startTransition(() => {
+      router.refresh();
+    });
+  }
 
   const availableSizes = useMemo(
     () => defaultSizes.filter((size) => !variants.some((variant) => variant.size === size)),
@@ -144,7 +151,7 @@ export function ProductForm({ mode, categories, initialData }: ProductFormProps)
         return;
       }
       toast.success(mode === "create" ? "Product created." : "Product updated.");
-      router.refresh();
+      refreshData();
       router.push("/admin/products");
     } catch (submitError) {
       console.error(submitError);
@@ -325,10 +332,10 @@ export function ProductForm({ mode, categories, initialData }: ProductFormProps)
       <div className="flex items-center gap-3">
         <button
           type="submit"
-          disabled={saving}
+          disabled={saving || isPending}
           className="rounded-md bg-[#6366f1] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#4f46e5] disabled:opacity-60"
         >
-          {saving ? "Saving..." : mode === "create" ? "Create Product" : "Update Product"}
+          {saving || isPending ? "Saving..." : mode === "create" ? "Create Product" : "Update Product"}
         </button>
         <button
           type="button"

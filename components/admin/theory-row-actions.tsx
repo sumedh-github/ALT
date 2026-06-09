@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 interface TheoryRowActionsProps {
@@ -13,7 +13,14 @@ interface TheoryRowActionsProps {
 export function TheoryRowActions({ theoryId, active }: TheoryRowActionsProps) {
   const [deleting, setDeleting] = useState(false);
   const [restoring, setRestoring] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+  function refreshData() {
+    startTransition(() => {
+      router.refresh();
+    });
+  }
 
   async function handleDelete() {
     const confirmed = window.confirm("Deactivate this theory?");
@@ -27,7 +34,7 @@ export function TheoryRowActions({ theoryId, active }: TheoryRowActionsProps) {
         throw new Error("Failed to delete theory");
       }
       toast.success("Theory deactivated.");
-      router.refresh();
+      refreshData();
     } catch (error) {
       console.error(error);
       toast.error("Unable to deactivate theory.");
@@ -48,7 +55,7 @@ export function TheoryRowActions({ theoryId, active }: TheoryRowActionsProps) {
         throw new Error("Failed to restore theory");
       }
       toast.success("Theory restored.");
-      router.refresh();
+      refreshData();
     } catch (error) {
       console.error(error);
       toast.error("Unable to restore theory.");
@@ -69,19 +76,19 @@ export function TheoryRowActions({ theoryId, active }: TheoryRowActionsProps) {
         <button
           type="button"
           onClick={handleDelete}
-          disabled={deleting}
+          disabled={deleting || isPending}
           className="text-[#fca5a5] transition hover:text-[#ef4444] disabled:opacity-60"
         >
-          {deleting ? "Deleting..." : "Delete"}
+          {deleting || isPending ? "Deleting..." : "Delete"}
         </button>
       ) : (
         <button
           type="button"
           onClick={handleRestore}
-          disabled={restoring}
+          disabled={restoring || isPending}
           className="text-[#86efac] transition hover:text-[#22c55e] disabled:opacity-60"
         >
-          {restoring ? "Restoring..." : "Restore"}
+          {restoring || isPending ? "Restoring..." : "Restore"}
         </button>
       )}
     </div>

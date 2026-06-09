@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Copy, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -22,7 +22,14 @@ interface MediaPanelProps {
 export function MediaPanel({ files }: MediaPanelProps) {
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
   const [pendingDeleteFile, setPendingDeleteFile] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+  function refreshData() {
+    startTransition(() => {
+      router.refresh();
+    });
+  }
 
   async function deleteFile(filename: string) {
     const confirmed = window.confirm("Delete this media file?");
@@ -38,7 +45,7 @@ export function MediaPanel({ files }: MediaPanelProps) {
         throw new Error("Unable to delete media");
       }
       toast.success("Media file deleted.");
-      router.refresh();
+      refreshData();
     } catch (error) {
       console.error(error);
       toast.error("Unable to delete media file.");
@@ -71,7 +78,7 @@ export function MediaPanel({ files }: MediaPanelProps) {
           onChange={(urls) => {
             setUploadedUrls(urls);
             toast.success("Media uploaded.");
-            router.refresh();
+            refreshData();
           }}
           maxImages={5}
         />
@@ -109,7 +116,7 @@ export function MediaPanel({ files }: MediaPanelProps) {
                 <button
                   type="button"
                   onClick={() => void deleteFile(file.filename)}
-                  disabled={pendingDeleteFile === file.filename}
+                  disabled={isPending || pendingDeleteFile === file.filename}
                   className="inline-flex items-center gap-1 rounded-md border border-[#2a2d3a] px-2 py-1 text-[11px] text-[#fca5a5] transition hover:border-[#ef4444] hover:text-[#ef4444]"
                 >
                   <Trash2 size={12} />

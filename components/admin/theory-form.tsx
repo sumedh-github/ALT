@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { ImageUploader } from "@/components/admin/image-uploader";
@@ -44,6 +44,7 @@ function toSlug(value: string) {
 
 export function TheoryForm({ mode, products, initialData }: TheoryFormProps) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [number, setNumber] = useState(initialData?.number ?? "");
   const [name, setName] = useState(initialData?.name ?? "");
   const [slug, setSlug] = useState(initialData?.slug ?? "");
@@ -59,6 +60,12 @@ export function TheoryForm({ mode, products, initialData }: TheoryFormProps) {
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  function refreshData() {
+    startTransition(() => {
+      router.refresh();
+    });
+  }
 
   function onNameChange(value: string) {
     setName(value);
@@ -109,7 +116,7 @@ export function TheoryForm({ mode, products, initialData }: TheoryFormProps) {
         return;
       }
       toast.success(mode === "create" ? "Theory created." : "Theory updated.");
-      router.refresh();
+      refreshData();
       router.push("/admin/theories");
     } catch (submitError) {
       console.error(submitError);
@@ -254,10 +261,10 @@ export function TheoryForm({ mode, products, initialData }: TheoryFormProps) {
       <div className="flex items-center gap-3">
         <button
           type="submit"
-          disabled={saving}
+          disabled={saving || isPending}
           className="rounded-md bg-[#6366f1] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#4f46e5] disabled:opacity-60"
         >
-          {saving ? "Saving..." : mode === "create" ? "Create Theory" : "Update Theory"}
+          {saving || isPending ? "Saving..." : mode === "create" ? "Create Theory" : "Update Theory"}
         </button>
         <button
           type="button"

@@ -2,7 +2,7 @@
 
 import type { OrderStatus } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 interface OrderStatusFormProps {
@@ -18,7 +18,14 @@ export function OrderStatusForm({ orderId, initialStatus }: OrderStatusFormProps
   const [internalNotes, setInternalNotes] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+  function refreshData() {
+    startTransition(() => {
+      router.refresh();
+    });
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -37,7 +44,7 @@ export function OrderStatusForm({ orderId, initialStatus }: OrderStatusFormProps
         return;
       }
       toast.success("Order updated.");
-      router.refresh();
+      refreshData();
     } catch (submitError) {
       console.error(submitError);
       setError("Unable to update order.");
@@ -114,10 +121,10 @@ export function OrderStatusForm({ orderId, initialStatus }: OrderStatusFormProps
 
       <button
         type="submit"
-        disabled={saving}
+        disabled={saving || isPending}
         className="rounded-md bg-[#6366f1] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#4f46e5] disabled:opacity-60"
       >
-        {saving ? "Saving..." : "Save updates"}
+        {saving || isPending ? "Saving..." : "Save updates"}
       </button>
     </form>
   );

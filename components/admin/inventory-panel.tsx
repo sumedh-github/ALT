@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -40,7 +40,14 @@ export function InventoryPanel({ products }: InventoryPanelProps) {
   const [editingVariantId, setEditingVariantId] = useState<string | null>(null);
   const [savingVariantId, setSavingVariantId] = useState<string | null>(null);
   const [editingValue, setEditingValue] = useState("");
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+  function refreshData() {
+    startTransition(() => {
+      router.refresh();
+    });
+  }
 
   const filteredProducts = useMemo(() => {
     if (filter === "ALL") {
@@ -72,7 +79,7 @@ export function InventoryPanel({ products }: InventoryPanelProps) {
         throw new Error("Unable to update inventory");
       }
       toast.success("Inventory updated.");
-      router.refresh();
+      refreshData();
     } catch (error) {
       console.error(error);
       toast.error("Unable to update inventory.");
@@ -152,7 +159,7 @@ export function InventoryPanel({ products }: InventoryPanelProps) {
                             className={`inline-flex min-w-12 items-center justify-center rounded-md px-2 py-1 text-xs font-medium ${cellColor(
                               value
                             )}`}
-                            disabled={savingVariantId === variant?.id}
+                            disabled={isPending || savingVariantId === variant?.id}
                           >
                             {savingVariantId === variant?.id ? "Saving..." : value}
                           </button>

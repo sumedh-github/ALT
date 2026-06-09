@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 interface DiscountRow {
@@ -27,6 +27,7 @@ function randomCode() {
 
 export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,6 +39,12 @@ export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
   const [active, setActive] = useState(true);
   const [pendingToggleId, setPendingToggleId] = useState<string | null>(null);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+
+  function refreshData() {
+    startTransition(() => {
+      router.refresh();
+    });
+  }
 
   async function createDiscount(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -69,7 +76,7 @@ export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
       setExpiry("");
       setActive(true);
       toast.success("Discount created.");
-      router.refresh();
+      refreshData();
     } catch (submitError) {
       console.error(submitError);
       setError("Unable to create discount.");
@@ -91,7 +98,7 @@ export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
         throw new Error("Unable to toggle discount state");
       }
       toast.success(`Discount ${nextActive ? "activated" : "deactivated"}.`);
-      router.refresh();
+      refreshData();
     } catch (toggleError) {
       console.error(toggleError);
       toast.error("Unable to update discount.");
@@ -112,7 +119,7 @@ export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
         throw new Error("Unable to delete discount");
       }
       toast.success("Discount deleted.");
-      router.refresh();
+      refreshData();
     } catch (deleteError) {
       console.error(deleteError);
       toast.error("Unable to delete discount.");
@@ -213,10 +220,10 @@ export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
           {error ? <p className="text-sm text-[#fca5a5] md:col-span-2">{error}</p> : null}
           <button
             type="submit"
-            disabled={saving}
+            disabled={saving || isPending}
             className="rounded-md bg-[#6366f1] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#4f46e5] disabled:opacity-60 md:col-span-2 md:justify-self-start"
           >
-            {saving ? "Saving..." : "Create Discount"}
+            {saving || isPending ? "Saving..." : "Create Discount"}
           </button>
         </form>
       ) : null}
@@ -261,7 +268,7 @@ export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
                     <button
                       type="button"
                       onClick={() => toggleActive(discount.id, !discount.active)}
-                      disabled={pendingToggleId === discount.id}
+                      disabled={isPending || pendingToggleId === discount.id}
                       className={`rounded-full px-2 py-1 text-[11px] font-medium ${
                         discount.active
                           ? "bg-[#22c55e]/20 text-[#86efac]"
@@ -279,7 +286,7 @@ export function DiscountsPanel({ discounts }: DiscountsPanelProps) {
                     <button
                       type="button"
                       onClick={() => deleteDiscount(discount.id)}
-                      disabled={pendingDeleteId === discount.id}
+                      disabled={isPending || pendingDeleteId === discount.id}
                       className="text-xs text-[#fca5a5] transition hover:text-[#ef4444]"
                     >
                       {pendingDeleteId === discount.id ? "Deleting..." : "Delete"}

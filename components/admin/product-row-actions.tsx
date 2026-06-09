@@ -3,7 +3,7 @@
 import type { ProductStatus } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 interface ProductRowActionsProps {
@@ -14,7 +14,14 @@ interface ProductRowActionsProps {
 export function ProductRowActions({ productId, status }: ProductRowActionsProps) {
   const [deleting, setDeleting] = useState(false);
   const [restoring, setRestoring] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+  function refreshData() {
+    startTransition(() => {
+      router.refresh();
+    });
+  }
 
   async function handleDelete() {
     const shouldDelete = window.confirm(
@@ -32,7 +39,7 @@ export function ProductRowActions({ productId, status }: ProductRowActionsProps)
         throw new Error("Failed to delete product");
       }
       toast.success("Product deleted.");
-      router.refresh();
+      refreshData();
     } catch (error) {
       console.error(error);
       toast.error("Unable to delete product right now.");
@@ -53,7 +60,7 @@ export function ProductRowActions({ productId, status }: ProductRowActionsProps)
         throw new Error("Failed to restore product");
       }
       toast.success("Product restored.");
-      router.refresh();
+      refreshData();
     } catch (error) {
       console.error(error);
       toast.error("Unable to restore product right now.");
@@ -74,19 +81,19 @@ export function ProductRowActions({ productId, status }: ProductRowActionsProps)
         <button
           type="button"
           onClick={handleRestore}
-          disabled={restoring}
+          disabled={restoring || isPending}
           className="text-[#86efac] transition hover:text-[#22c55e] disabled:opacity-60"
         >
-          {restoring ? "Restoring..." : "Restore"}
+          {restoring || isPending ? "Restoring..." : "Restore"}
         </button>
       ) : (
         <button
           type="button"
           onClick={handleDelete}
-          disabled={deleting}
+          disabled={deleting || isPending}
           className="text-[#fca5a5] transition hover:text-[#ef4444] disabled:opacity-60"
         >
-          {deleting ? "Deleting..." : "Delete"}
+          {deleting || isPending ? "Deleting..." : "Delete"}
         </button>
       )}
     </div>
