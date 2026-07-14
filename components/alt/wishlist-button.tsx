@@ -1,0 +1,97 @@
+"use client";
+
+import { Heart } from "lucide-react";
+import type { MouseEvent } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+import { cn } from "@/lib/utils";
+import { toWishlistItem } from "@/lib/wishlist";
+import { useWishlistStore } from "@/store/wishlist-store";
+import type { StorefrontProduct } from "@/types/product";
+
+interface WishlistButtonProps {
+  product: StorefrontProduct;
+  variant?: "icon" | "full";
+  className?: string;
+}
+
+export function WishlistButton({
+  product,
+  variant = "icon",
+  className
+}: WishlistButtonProps) {
+  const [mounted, setMounted] = useState(false);
+  const isWishlisted = useWishlistStore((state) =>
+    state.items.some((item) => item.productId === product.id)
+  );
+  const toggleItem = useWishlistStore((state) => state.toggleItem);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const wishlistItem = useMemo(() => toWishlistItem(product), [product]);
+
+  const label = mounted && isWishlisted
+    ? `Remove ${product.name} from wishlist`
+    : `Add ${product.name} to wishlist`;
+
+  const onToggle = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!mounted) {
+      return;
+    }
+
+    void toggleItem(wishlistItem);
+  };
+
+  if (variant === "full") {
+    return (
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-label={label}
+        title={label}
+        className={cn(
+          "inline-flex items-center gap-2 rounded-sm border border-taupe/35 bg-transparent px-4 py-3 font-body text-xs uppercase tracking-[0.22em] text-taupe transition duration-200 hover:border-gold hover:text-gold",
+          mounted && isWishlisted ? "border-gold text-gold" : "",
+          className
+        )}
+      >
+        <Heart
+          size={16}
+          className={cn(
+            "transition-colors",
+            mounted && isWishlisted ? "fill-gold text-gold" : "text-taupe"
+          )}
+        />
+        <span>
+          {mounted && isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+        </span>
+      </button>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-label={label}
+      title={label}
+      className={cn(
+        "inline-flex h-10 w-10 items-center justify-center rounded-full border border-taupe/40 bg-black/45 text-taupe backdrop-blur-sm transition duration-200 hover:border-gold hover:text-gold",
+        mounted && isWishlisted ? "border-gold text-gold" : "",
+        className
+      )}
+    >
+      <Heart
+        size={18}
+        className={cn(
+          "transition-colors",
+          mounted && isWishlisted ? "fill-gold text-gold" : "text-current"
+        )}
+      />
+    </button>
+  );
+}
