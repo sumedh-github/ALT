@@ -1,0 +1,138 @@
+import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
+
+import { requireAdminRoute } from "@/lib/admin-auth";
+import { prisma } from "@/lib/prisma";
+
+const localOrRemoteImageSchema = z
+  .string()
+  .trim()
+  .refine((value) => {
+    if (!value) return false;
+    if (value.startsWith("/uploads/")) return true;
+    return z.string().url().safeParse(value).success;
+  }, "Image must be a valid URL or /uploads path.");
+
+const booleanFromInputSchema = z.preprocess((value) => {
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === "true") return true;
+    if (normalized === "false") return false;
+  }
+  return value;
+}, z.boolean());
+
+const theoryPayloadSchema = z.object({
+  number: z.string().trim().min(3),
+  name: z.string().trim().min(2),
+  slug: z.string().trim().min(2),
+  tagline: z.string().optional().or(z.literal("")).default(""),
+  description: z.string().min(500),
+  season: z.string().optional().or(z.literal("")).default(""),
+  year: z
+    .union([z.coerce.number().int(), z.null(), z.literal("")])
+    .optional()
+    .transform((value) => (value === "" || value === undefined ? null : value)),
+  image: z.string().optional().or(z.literal("")).default(""),
+  active: booleanFromInputSchema.optional().default(true),
+  productIds: z.array(z.string()).optional().default([])
+});
+
+function revalidateTheoryPaths(slug?: string) {
+  revalidatePath("/admin/theories");
+  revalidatePath("/theories");
+  revalidatePath("/theories/[slug]", "page");
+  if (slug) {
+    revalidatePath(`/theories/${slug}`);
+  }
+  revalidatePath("/");
+}
+
+export async function GET() {
+  const adminCheck = await requireAdminRoute();
+  if (!adminCheck.ok) {
+    return adminCheck.response;
+  }
+
+  try {
+    const theories = await prisma.theory.findMany({
+      include: {
+        products: {
+          select: {
+            productId: true,
+            position: true
+          }
+        }
+      },
+      orderBy: { number: "asc" }
+    });
+    return NextResponse.json({ theories });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Failed to load theories." }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  const adminCheck = await requireAdminRoute();
+  if (!adminCheck.ok) {
+    return adminCheck.response;
+  }
+
+  try {
+    const body = await request.json();
+    const parsed = theoryPayloadSchema.safeParse(body);
+    if (!parsed.success) {
+      console.error("Validation error:", parsed.error.flatten());
+      return NextResponse.json(
+        { error: "Validation failed", details: parsed.error.flatten() },
+        { status: 400 }
+      );
+    }
+    const payload = parsed.data;
+
+    const imageValidation = localOrRemoteImageSchema.safeParse(payload.image);
+    if (!imageValidation.success) {
+      return NextResponse.json(
+        {
+          error: "Validation failed",
+          details: { fieldErrors: { image: [imageValidation.error.issues[0]?.message ?? "Invalid image"] } }
+        },
+        { status: 400 }
+      );
+    }
+
+    const theory = await prisma.theory.create({
+      data: {
+        number: payload.number,
+        name: payload.name,
+        slug: payload.slug,
+        tagline: payload.tagline,
+        description: payload.description,
+        season: payload.season,
+        year: payload.year ?? null,
+        image: payload.image,
+        active: payload.active,
+        products: {
+          create: payload.productIds.map((productId, index) => ({
+            productId,
+            position: index
+          }))
+        }
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true
+      }
+    });
+
+    revalidateTheoryPaths(theory.slug);
+
+    return NextResponse.json({ theory }, { status: 201 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Failed to create theory." }, { status: 500 });
+  }
+}

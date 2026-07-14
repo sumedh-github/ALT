@@ -1,15 +1,16 @@
 "use client";
 
 import { Heart } from "lucide-react";
+import type { MouseEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
 
-import type { AltProduct } from "@/lib/mock-data";
-import { altCategories } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { toWishlistItem } from "@/lib/wishlist";
 import { useWishlistStore } from "@/store/wishlist-store";
+import type { StorefrontProduct } from "@/types/product";
 
 interface WishlistButtonProps {
-  product: AltProduct;
+  product: StorefrontProduct;
   variant?: "icon" | "full";
   className?: string;
 }
@@ -29,29 +30,20 @@ export function WishlistButton({
     setMounted(true);
   }, []);
 
-  const category = useMemo(() => {
-    return altCategories.find((entry) => entry.id === product.categoryId)?.name;
-  }, [product.categoryId]);
+  const wishlistItem = useMemo(() => toWishlistItem(product), [product]);
 
   const label = mounted && isWishlisted
     ? `Remove ${product.name} from wishlist`
     : `Add ${product.name} to wishlist`;
 
-  const onToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const onToggle = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
     if (!mounted) {
       return;
     }
 
-    toggleItem({
-      productId: product.id,
-      name: product.name,
-      slug: product.slug,
-      price: product.price,
-      image: product.images[0]?.url ?? "",
-      category
-    });
+    void toggleItem(wishlistItem);
   };
 
   if (variant === "full") {

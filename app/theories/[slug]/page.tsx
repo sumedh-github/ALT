@@ -4,25 +4,46 @@ import { notFound } from "next/navigation";
 
 import { PageReveal } from "@/components/alt/page-reveal";
 import { ProductCard } from "@/components/alt/product-card";
-import { altProducts, altTheories } from "@/lib/mock-data";
+import { prisma } from "@/lib/prisma";
 
 interface TheoryDetailPageProps {
   params: { slug: string };
 }
 
-export function generateStaticParams() {
-  return altTheories.map((theory) => ({ slug: theory.slug }));
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export async function generateStaticParams() {
+  return [];
 }
 
-export default function TheoryDetailPage({ params }: TheoryDetailPageProps) {
-  const theory = altTheories.find((entry) => entry.slug === params.slug);
-  if (!theory) {
+export default async function TheoryDetailPage({ params }: TheoryDetailPageProps) {
+  const theory = await prisma.theory.findUnique({
+    where: { slug: params.slug },
+    include: {
+      products: {
+        orderBy: { position: "asc" },
+        include: {
+          product: {
+            include: {
+              images: {
+                orderBy: { position: "asc" }
+              },
+              variants: true,
+              category: true
+            }
+          }
+        }
+      }
+    }
+  });
+  if (!theory || !theory.active) {
     notFound();
   }
 
-  const theoryProducts = theory.productIds
-    .map((productId) => altProducts.find((product) => product.id === productId))
-    .filter((product): product is (typeof altProducts)[number] => Boolean(product));
+  const theoryProducts = theory.products
+    .map((item) => item.product)
+    .filter((product) => product.status === "ACTIVE");
 
   return (
     <div className="space-y-10 pb-10">
@@ -46,7 +67,7 @@ export default function TheoryDetailPage({ params }: TheoryDetailPageProps) {
                 {theory.name}
               </h1>
               <p className="mt-4 font-body text-sm italic tracking-[0.05em] text-taupe sm:text-base">
-                {theory.tagline}
+                {theory.tagline ?? "The Oversized Theory"}
               </p>
             </div>
           </div>
@@ -56,7 +77,8 @@ export default function TheoryDetailPage({ params }: TheoryDetailPageProps) {
       <PageReveal delay={0.06}>
         <section className="max-w-3xl pl-1 sm:pl-6 lg:pl-10">
           <p className="font-body text-base leading-relaxed text-taupe">
-            {theory.description} Built for {theory.season} {theory.year}, this
+            {theory.description} Built for {theory.season ?? "ALT Season"}{" "}
+            {theory.year ?? new Date().getFullYear()}, this
             Theory carries ALT&apos;s quiet confidence through weighted layers and
             intentional volume.
           </p>

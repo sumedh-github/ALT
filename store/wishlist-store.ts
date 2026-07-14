@@ -33,29 +33,68 @@ export const useWishlistStore = create<WishlistStore>()(
           const exists = state.items.some(
             (entry) => entry.productId === item.productId
           );
-          if (exists) {
-            return state;
+        } catch (error) {
+          if (error instanceof ApiRequestError && error.status === 401) {
+            return;
           }
-          return { items: [...state.items, item] };
-        }),
-      removeItem: (productId) =>
+          console.error(error);
+        }
+      },
+      addItem: async (item) => {
+        const currentItems = get().items;
+        if (currentItems.some((entry) => entry.productId === item.productId)) {
+          return;
+        }
+
+        set({ items: [...currentItems, item] });
+
+        try {
+          await adminPost<WishlistApiResponse>(ACCOUNT_API_PATHS.wishlist, {
+            productId: item.productId
+          } satisfies WishlistMutationPayload);
+        } catch (error) {
+          if (error instanceof ApiRequestError && error.status === 401) {
+            return;
+          }
+          console.error(error);
+        }
+      },
+      removeItem: async (productId) => {
         set((state) => ({
           items: state.items.filter((entry) => entry.productId !== productId)
-        })),
-      toggleItem: (item) =>
-        set((state) => {
-          const exists = state.items.some(
-            (entry) => entry.productId === item.productId
-          );
-          if (exists) {
-            return {
-              items: state.items.filter(
-                (entry) => entry.productId !== item.productId
-              )
-            };
+        }));
+
+        try {
+          await adminDelete(`${ACCOUNT_API_PATHS.wishlist}/${productId}`);
+        } catch (error) {
+          if (error instanceof ApiRequestError && error.status === 401) {
+            return;
           }
-          return { items: [...state.items, item] };
-        }),
+          console.error(error);
+        }
+      },
+      toggleItem: async (item) => {
+        if (get().items.some((entry) => entry.productId === item.productId)) {
+          await get().removeItem(item.productId);
+          return;
+        }
+        await get().addItem(item);
+      },
+      clearAllItems: async () => {
+        const currentItems = get().items;
+        set({ items: [] });
+
+        await Promise.all(
+          currentItems.map((item) =>
+            adminDelete(`${ACCOUNT_API_PATHS.wishlist}/${item.productId}`).catch((error) => {
+              if (error instanceof ApiRequestError && error.status === 401) {
+                return;
+              }
+              console.error(error);
+            })
+          )
+        );
+      },
       isWishlisted: (productId) =>
         get().items.some((entry) => entry.productId === productId),
       clearWishlist: () => set({ items: [] })

@@ -10,8 +10,16 @@ import { CartDrawer } from "@/components/alt/cart-drawer";
 import { useCartSummary } from "@/hooks/use-cart-summary";
 import { useWishlistSync } from "@/hooks/use-wishlist-sync";
 import { useWishlistSummary } from "@/hooks/use-wishlist-summary";
-import { altTheories } from "@/lib/mock-data";
+import { useWishlistSync } from "@/hooks/use-wishlist-sync";
+import { useWishlistStore } from "@/store/wishlist-store";
 import { useUiStore } from "@/store/ui-store";
+
+interface NavTheory {
+  id: string;
+  slug: string;
+  number: string;
+  name: string;
+}
 
 const desktopLinks = [
   { href: "/shop", label: "Shop" },
@@ -28,8 +36,11 @@ export function AltNavbar() {
   const userId = session?.user?.id;
   const userName = session?.user?.name?.trim() || "ALT";
   const isLoggedIn = status === "authenticated";
+  const isAdmin = session?.user?.role === "ADMIN";
+  const displayName = session?.user?.name?.trim() || "ALT";
   const { quantity } = useCartSummary();
   const { count } = useWishlistSummary();
+  const clearWishlist = useWishlistStore((state) => state.clearWishlist);
   const setCartOpen = useUiStore((state) => state.setCartOpen);
   const mobileMenuOpen = useUiStore((state) => state.mobileMenuOpen);
   const setMobileMenuOpen = useUiStore((state) => state.setMobileMenuOpen);
@@ -94,7 +105,7 @@ export function AltNavbar() {
                   className="absolute left-1/2 top-full z-40 mt-3 min-w-[300px] -translate-x-1/2 rounded-sm border border-white/10 bg-[#1a1e24] p-4 shadow-luxe"
                 >
                   <div className="space-y-2">
-                    {altTheories.map((theory) => (
+                    {theories.map((theory) => (
                       <Link
                         key={theory.id}
                         href={`/theories/${theory.slug}`}
@@ -139,10 +150,21 @@ export function AltNavbar() {
               >
                 HI, {userName}
               </Link>
+              {isAdmin ? (
+                <Link
+                  href="/admin"
+                  className="hidden rounded-sm border border-[#6366f1]/60 px-2 py-1 font-body text-[10px] uppercase tracking-[0.18em] text-[#6366f1] sm:inline-block"
+                >
+                  ADMIN
+                </Link>
+              ) : null}
               <button
                 type="button"
                 className="hidden p-1 text-gold transition hover:text-taupe sm:inline-flex"
-                onClick={() => signOut({ callbackUrl: "/" })}
+                onClick={() => {
+                  clearWishlist();
+                  void signOut({ callbackUrl: "/" });
+                }}
                 aria-label="Sign out"
               >
                 <LogOut size={18} />
@@ -213,7 +235,7 @@ export function AltNavbar() {
 
             {mobileTheoriesOpen ? (
               <div id="mobile-theories-list" className="space-y-2 pl-3">
-                {altTheories.map((theory) => (
+                {theories.map((theory) => (
                   <Link
                     key={theory.id}
                     href={`/theories/${theory.slug}`}
@@ -262,11 +284,21 @@ export function AltNavbar() {
                   >
                     My Account
                   </Link>
+                  {isAdmin ? (
+                    <Link
+                      href="/admin"
+                      className="font-body text-[12px] uppercase tracking-[0.18em] text-[#6366f1]"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Admin
+                    </Link>
+                  ) : null}
                   <button
                     type="button"
                     className="text-left font-body text-[13px] font-medium uppercase tracking-widest text-red-300/80 transition-colors duration-200 hover:text-red-200"
                     onClick={() => {
                       setMobileMenuOpen(false);
+                      clearWishlist();
                       void signOut({ callbackUrl: "/" });
                     }}
                   >

@@ -1,9 +1,9 @@
 import { PageReveal } from "@/components/alt/page-reveal";
 import { ProductCard } from "@/components/alt/product-card";
-import type { AltProduct } from "@/lib/mock-data";
+import type { StorefrontProduct } from "@/types/product";
 
 interface ProductGridProps {
-  products: AltProduct[];
+  products: StorefrontProduct[];
 }
 
 export function ProductGrid({ products }: ProductGridProps) {

@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { Instagram } from "lucide-react";
+import { SessionProvider, useSession } from "next-auth/react";
 
 function TikTokIcon() {
   return (
@@ -14,28 +17,48 @@ function TikTokIcon() {
 
 export function AltFooter() {
   return (
+    <SessionProvider>
+      <AltFooterContent />
+    </SessionProvider>
+  );
+}
+
+function AltFooterContent() {
+  const { data: session, status } = useSession();
+  const isAdmin = status === "authenticated" && session?.user?.role === "ADMIN";
+
+  return (
     <footer className="border-t border-surface/70 py-6">
-      <div className="mx-auto flex w-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
-        <p className="font-body text-[11px] uppercase tracking-[0.2em] text-muted">
-          Avero Loose Theory
-        </p>
-        <div className="flex-1" />
-        <div className="flex items-center gap-4 text-taupe">
-          <Link
-            href="#"
-            aria-label="Instagram"
-            className="transition-colors duration-200 hover:text-gold"
-          >
-            <Instagram size={18} />
-          </Link>
-          <Link
-            href="#"
-            aria-label="TikTok"
-            className="transition-colors duration-200 hover:text-gold"
-          >
-            <TikTokIcon />
-          </Link>
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center">
+          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-muted">
+            Avero Loose Theory
+          </p>
+          <div className="flex-1" />
+          <div className="flex items-center gap-4 text-taupe">
+            <Link
+              href="#"
+              aria-label="Instagram"
+              className="transition-colors duration-200 hover:text-gold"
+            >
+              <Instagram size={18} />
+            </Link>
+            <Link
+              href="#"
+              aria-label="TikTok"
+              className="transition-colors duration-200 hover:text-gold"
+            >
+              <TikTokIcon />
+            </Link>
+          </div>
         </div>
+        {isAdmin ? (
+          <div className="mt-4 text-right">
+            <Link href="/admin" className="font-body text-[10px] text-muted">
+              Admin
+            </Link>
+          </div>
+        ) : null}
       </div>
     </footer>
   );

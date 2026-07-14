@@ -1,12 +1,38 @@
 import { TheoryCardGrid } from "@/components/alt/theory-card-grid";
 import { PageReveal } from "@/components/alt/page-reveal";
-import { altTheories } from "@/lib/mock-data";
+import { prisma } from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata = {
   title: "Theories | Avero Loose Theory"
 };
 
-export default function TheoriesPage() {
+export default async function TheoriesPage() {
+  const theoriesRaw = await prisma.theory.findMany({
+    where: { active: true },
+    include: {
+      products: {
+        select: { productId: true }
+      }
+    },
+    orderBy: { createdAt: "desc" }
+  });
+
+  const theories = theoriesRaw.map((theory) => ({
+    id: theory.id,
+    slug: theory.slug,
+    number: theory.number,
+    name: theory.name,
+    tagline: theory.tagline ?? "",
+    description: theory.description,
+    image: theory.image,
+    productIds: theory.products.map((item) => item.productId),
+    season: theory.season ?? "",
+    year: theory.year ?? new Date().getFullYear()
+  }));
+
   return (
     <div className="space-y-10 pb-10">
       <PageReveal>
@@ -22,7 +48,7 @@ export default function TheoriesPage() {
         </section>
       </PageReveal>
 
-      <TheoryCardGrid theories={altTheories} />
+      <TheoryCardGrid theories={theories} />
     </div>
   );
 }
