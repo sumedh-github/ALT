@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import "./globals.css";
 import { AltFooter } from "@/components/alt/alt-footer";
 import { AltNavbar } from "@/components/alt/alt-navbar";
+import { Providers } from "@/app/providers";
 
 const display = Cormorant_Garamond({
   variable: "--font-display",
@@ -32,13 +33,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body>
-        <div className="min-h-screen bg-bg text-text">
-          <AltNavbar />
-          <main className="mx-auto w-full max-w-7xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
-            {children}
-          </main>
-          <AltFooter />
-        </div>
+        <Providers>
+          <div className="min-h-screen bg-bg text-text">
+            <AltNavbar />
+            <main className="mx-auto w-full max-w-7xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
+              {children}
+            </main>
+            <AltFooter />
+          </div>
+        </Providers>
       </body>
     </html>
   );

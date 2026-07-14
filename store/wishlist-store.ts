@@ -3,24 +3,15 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-import { adminDelete, adminGet, adminPost, ApiRequestError } from "@/lib/admin-fetch";
-import { ACCOUNT_API_PATHS } from "@/lib/constants";
-import {
-  dedupeWishlistItems,
-  toWishlistItemFromApiItem,
-  type WishlistApiResponse,
-  type WishlistMutationPayload
-} from "@/lib/wishlist";
+import { areWishlistItemsEqual, dedupeWishlistItems } from "@/lib/wishlist";
 import type { WishlistItem } from "@/types";
 
 type WishlistStore = {
   items: WishlistItem[];
-  setItems: (items: WishlistItem[]) => void;
-  syncFromDatabase: () => Promise<void>;
-  addItem: (item: WishlistItem) => Promise<void>;
-  removeItem: (productId: string) => Promise<void>;
-  toggleItem: (item: WishlistItem) => Promise<void>;
-  clearAllItems: () => Promise<void>;
+  mergeItems: (items: WishlistItem[]) => void;
+  addItem: (item: WishlistItem) => void;
+  removeItem: (productId: string) => void;
+  toggleItem: (item: WishlistItem) => void;
   isWishlisted: (productId: string) => boolean;
   clearWishlist: () => void;
 };
@@ -29,31 +20,18 @@ export const useWishlistStore = create<WishlistStore>()(
   persist(
     (set, get) => ({
       items: [],
-      setItems: (items) => {
-        set({ items: dedupeWishlistItems(items) });
-      },
-      syncFromDatabase: async () => {
-        try {
-          const response = await adminGet<WishlistApiResponse>(ACCOUNT_API_PATHS.wishlist);
-          const remoteItems = response.items.map(toWishlistItemFromApiItem);
-          const localItems = get().items;
-          const mergedItems = dedupeWishlistItems([...localItems, ...remoteItems]);
-          set({ items: mergedItems });
-
-          const remoteIds = new Set(remoteItems.map((item) => item.productId));
-          const missingLocalItems = localItems.filter((item) => !remoteIds.has(item.productId));
-          if (!missingLocalItems.length) {
-            return;
+      mergeItems: (incomingItems) =>
+        set((state) => {
+          const merged = dedupeWishlistItems([...state.items, ...incomingItems]);
+          if (areWishlistItemsEqual(state.items, merged)) {
+            return state;
           }
-
-          await Promise.all(
-            missingLocalItems.map((item) =>
-              adminPost<WishlistApiResponse>(ACCOUNT_API_PATHS.wishlist, {
-                productId: item.productId
-              } satisfies WishlistMutationPayload).catch((error) => {
-                console.error(error);
-              })
-            )
+          return { items: merged };
+        }),
+      addItem: (item) =>
+        set((state) => {
+          const exists = state.items.some(
+            (entry) => entry.productId === item.productId
           );
         } catch (error) {
           if (error instanceof ApiRequestError && error.status === 401) {

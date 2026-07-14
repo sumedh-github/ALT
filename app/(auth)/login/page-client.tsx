@@ -61,24 +61,19 @@ export function LoginClientPage({ callbackUrl }: LoginClientPageProps) {
 
     setSubmitting(false);
 
-    if (result?.error) {
+    if (!result?.ok || result.error) {
       setAuthError("Credentials don’t match our records.");
       return;
     }
 
-    if (result?.ok) {
-      const session = await getSession();
-      if (session?.user?.role === "ADMIN") {
-        router.push("/admin");
-      } else {
-        router.push(callbackUrl || "/");
-      }
-      router.refresh();
+    router.refresh();
+    const session = await getSession();
+    if (session?.user?.role === "ADMIN") {
+      router.push("/admin");
       return;
     }
 
     router.push(callbackUrl || "/");
-    router.refresh();
   };
 
   const onGoogle = async () => {

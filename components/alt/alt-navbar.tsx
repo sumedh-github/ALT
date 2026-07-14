@@ -3,11 +3,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Heart, LogOut, Menu, ShoppingBag } from "lucide-react";
 import Link from "next/link";
-import { SessionProvider, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 import { CartDrawer } from "@/components/alt/cart-drawer";
 import { useCartSummary } from "@/hooks/use-cart-summary";
+import { useWishlistSync } from "@/hooks/use-wishlist-sync";
 import { useWishlistSummary } from "@/hooks/use-wishlist-summary";
 import { useWishlistSync } from "@/hooks/use-wishlist-sync";
 import { useWishlistStore } from "@/store/wishlist-store";
@@ -28,19 +29,12 @@ const desktopLinks = [
 ];
 
 export function AltNavbar() {
-  return (
-    <SessionProvider>
-      <AltNavbarContent />
-    </SessionProvider>
-  );
-}
-
-function AltNavbarContent() {
   const [mounted, setMounted] = useState(false);
   const [theoriesOpen, setTheoriesOpen] = useState(false);
   const [mobileTheoriesOpen, setMobileTheoriesOpen] = useState(false);
-  const [theories, setTheories] = useState<NavTheory[]>([]);
   const { data: session, status } = useSession();
+  const userId = session?.user?.id;
+  const userName = session?.user?.name?.trim() || "ALT";
   const isLoggedIn = status === "authenticated";
   const isAdmin = session?.user?.role === "ADMIN";
   const displayName = session?.user?.name?.trim() || "ALT";
@@ -55,31 +49,11 @@ function AltNavbarContent() {
     setMounted(true);
   }, []);
 
-  useWishlistSync(status);
+  useWishlistSync(userId, status);
 
-  useEffect(() => {
-    let active = true;
-    async function loadTheories() {
-      try {
-        const response = await fetch("/api/theories", { cache: "no-store" });
-        if (!response.ok) {
-          return;
-        }
-        const json = (await response.json()) as {
-          theories?: Array<{ id: string; slug: string; number: string; name: string }>;
-        };
-        if (active) {
-          setTheories(json.theories ?? []);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    void loadTheories();
-    return () => {
-      active = false;
-    };
-  }, []);
+  if (status === "loading") {
+    return null;
+  }
 
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-black/40 backdrop-blur-md">
@@ -174,7 +148,7 @@ function AltNavbarContent() {
                 href="/account"
                 className="hidden font-body text-[11px] tracking-widest text-muted transition-colors duration-200 hover:text-gold sm:inline-block"
               >
-                HI, {displayName}
+                HI, {userName}
               </Link>
               {isAdmin ? (
                 <Link
