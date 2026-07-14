@@ -3,11 +3,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Heart, LogOut, Menu, ShoppingBag } from "lucide-react";
 import Link from "next/link";
-import { SessionProvider, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 import { CartDrawer } from "@/components/alt/cart-drawer";
 import { useCartSummary } from "@/hooks/use-cart-summary";
+import { useWishlistSync } from "@/hooks/use-wishlist-sync";
 import { useWishlistSummary } from "@/hooks/use-wishlist-summary";
 import { altTheories } from "@/lib/mock-data";
 import { useUiStore } from "@/store/ui-store";
@@ -20,18 +21,12 @@ const desktopLinks = [
 ];
 
 export function AltNavbar() {
-  return (
-    <SessionProvider>
-      <AltNavbarContent />
-    </SessionProvider>
-  );
-}
-
-function AltNavbarContent() {
   const [mounted, setMounted] = useState(false);
   const [theoriesOpen, setTheoriesOpen] = useState(false);
   const [mobileTheoriesOpen, setMobileTheoriesOpen] = useState(false);
-  const { status } = useSession();
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id;
+  const userName = session?.user?.name?.trim() || "ALT";
   const isLoggedIn = status === "authenticated";
   const { quantity } = useCartSummary();
   const { count } = useWishlistSummary();
@@ -42,6 +37,12 @@ function AltNavbarContent() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useWishlistSync(userId, status);
+
+  if (status === "loading") {
+    return null;
+  }
 
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-black/40 backdrop-blur-md">
@@ -134,9 +135,9 @@ function AltNavbarContent() {
             <>
               <Link
                 href="/account"
-                className="hidden font-body text-[11px] uppercase tracking-widest text-muted transition-colors duration-200 hover:text-gold sm:inline-block"
+                className="hidden font-body text-[11px] tracking-widest text-muted transition-colors duration-200 hover:text-gold sm:inline-block"
               >
-                MY THEORY
+                HI, {userName}
               </Link>
               <button
                 type="button"

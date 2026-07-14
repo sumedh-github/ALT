@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -61,13 +61,19 @@ export function LoginClientPage({ callbackUrl }: LoginClientPageProps) {
 
     setSubmitting(false);
 
-    if (result?.error) {
+    if (!result?.ok || result.error) {
       setAuthError("Credentials don’t match our records.");
       return;
     }
 
-    router.push(result?.url ?? callbackUrl);
     router.refresh();
+    const session = await getSession();
+    if (session?.user?.role === "ADMIN") {
+      router.push("/admin");
+      return;
+    }
+
+    router.push(callbackUrl || "/");
   };
 
   const onGoogle = async () => {
